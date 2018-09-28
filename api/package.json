@@ -1,0 +1,28 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/server.js",
+  "dependencies": {
+    "@types/express-ws": "^3.0.0",
+    "express": "^4.16.3",
+    "express-ws": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.16.0",
+    "ts-loader": "^5.1.0",
+    "tslint": "^5.11.0",
+    "tslint-config-airbnb": "^5.11.0",
+    "tslint-loader": "^3.6.0",
+    "typescript": "^3.0.3",
+    "webpack": "^4.19.0",
+    "webpack-cli": "^3.1.0",
+    "webpack-node-externals": "^1.7.2"
+  },
+  "scripts": {
+    "dev": "./node_modules/.bin/webpack --config webpack.config.dev.js && node dist/server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "pluswing Inc.",
+  "license": "ISC"
+}
