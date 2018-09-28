@@ -10,8 +10,10 @@
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
+    "@types/request-promise": "^4.1.42",
     "babel-loader": "^8.0.2",
     "register-service-worker": "^1.0.0",
+    "request-promise": "^4.2.2",
     "vue": "^2.5.17",
     "vue-class-component": "^6.0.0",
     "vue-property-decorator": "^7.0.0",
