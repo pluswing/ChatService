@@ -1,27 +1,17 @@
 import * as Express from 'express';
-import * as ExpressWs from 'express-ws';
+import * as BodyParser from 'body-parser';
 
-const { app, getWss, applyTo } = ExpressWs(Express());
+import Chat from './routes/Chat';
+import ChatWs from './routes/ChatWs';
 
-applyTo(Express.Router());
-getWss().clients.forEach((ws) => {
-    if (ws.readyState !== ws.OPEN) {
-        ws.terminate();
-        return;
-    }
-    ws.ping();
-});
+const app = Express();
+app.use(BodyParser.json());
+app.use(BodyParser.raw());
+app.use(BodyParser.text());
+app.use(BodyParser.urlencoded());
 
-app.get('/', (req, res) => {
-    return res.send('Hello TS world.');
-});
-
-app.ws('/', (ws, req) => {
-    ws.on('message', (msg) => {
-        console.log(msg);
-        ws.send(msg);
-    });
-});
+app.use('/v1/chat/', Chat);
+app.use('/v1/chat/ws', ChatWs);
 
 app.listen(3000, () => {
     console.log('Example app listening on port 3000!');
