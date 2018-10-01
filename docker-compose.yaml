@@ -5,6 +5,8 @@ services:
     user: "${UID}:${GID}"
     working_dir: "${HOME}"
     tty: true
+    links:
+      - mysql
     volumes:
       - "./api:${HOME}/api"
     ports:
@@ -30,3 +32,15 @@ services:
     ports:
       - "3002:3002"
     command: "node"
+  mysql:
+    build: ./mysql
+    user: "${UID}:${GID}"
+    working_dir: "${HOME}"
+    tty: true
+    volumes:
+      - "./mysql/data:/var/lib/mysql"
+      - "./mysql/conf:/etc/mysql/conf.d"
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
