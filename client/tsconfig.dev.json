@@ -13,6 +13,8 @@
     "noUnusedParameters": false,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    "strictFunctionTypes": false
+    "strictFunctionTypes": false,
+    "allowSyntheticDefaultImports": true,
+    "experimentalDecorators": true
   }
 }
