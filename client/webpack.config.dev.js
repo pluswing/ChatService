@@ -19,13 +19,6 @@ module.exports = {
                 ]
             },
             {
-                test: /\.css$/,
-                use: [
-                    'vue-style-loader',
-                    'css-loader',
-                ]
-            },
-            {
                 enforce: 'pre',
                 loader: 'tslint-loader',
                 test: /\.ts$/,

@@ -1,7 +1,8 @@
 <template>
-  <div class="hello">
+  <div class="pluswing_chat_service_container">
       はろー
       <p>A</p>
+      <b-checkbox>Basic</b-checkbox>
   </div>
 </template>
 
@@ -32,6 +33,12 @@ export default class App extends Vue {
     }
 }
 </script>
+
+<style lang="scss">
+.pluswing_chat_service_container {
+    @import '../css/buefy.scss';
+}
+</style>
 
 <style scoped lang="scss">
 .hello {
