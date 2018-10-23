@@ -1,12 +1,12 @@
 <template>
   <div class="pluswing_chat_service_container">
     <Minimize v-if="minimized" title="チャット" @clicked="show"/>
-    <Chat v-if="!minimized" @close="hide"/>
+    <Chat v-if="!minimized" :uid="uid" @close="hide"/>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import { Component, Prop, Vue } from 'vue-property-decorator';
 import Chat from './Chat.vue';
 import Minimize from './Minimize.vue';
 
@@ -17,7 +17,13 @@ import Minimize from './Minimize.vue';
     },
 })
 export default class App extends Vue {
+    @Prop() private uid!: string;
+
     private minimized = true;
+
+    public mounted() {
+        console.log(this.uid);
+    }
 
     show() {
         this.minimized = false;

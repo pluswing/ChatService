@@ -18,8 +18,8 @@ const bind = (path: string, originalApp: Express.Application) => {
 
     const sockets:{[key: string]: WebSocket} = {};
 
-    // {method:'register', uid;: 'xxxxxxxxx';}
-    // {method: 'post', to: 'xxxxxxx', body: '......';}
+    // {method: 'register', uid: 'xxxxxxxxx'}
+    // {method: 'post', to: 'xxxxxxx', body: '......'}
 
     app.ws(path, (ws, req) => {
         ws.on('message', (msg) => {
