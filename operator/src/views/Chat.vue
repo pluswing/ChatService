@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <ChatHistory v-bind:messages="messages"/>
+    <ChatHistory :messages="messages"/>
     <ChatInputForm @send="send"/>
   </div>
 </template>
