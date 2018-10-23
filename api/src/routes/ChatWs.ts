@@ -1,22 +1,45 @@
 import * as Express from 'express';
 import * as ExpressWs from 'express-ws';
+import * as WebSocket from 'ws';
 
-const { app, getWss, applyTo } = ExpressWs(Express());
+const bind = (path: string, originalApp: Express.Application) => {
 
-applyTo(Express.Router());
-getWss().clients.forEach((ws) => {
-    if (ws.readyState !== ws.OPEN) {
-        ws.terminate();
-        return;
-    }
-    ws.ping();
-});
+    const { app, getWss, applyTo } = ExpressWs(originalApp);
 
-app.ws('/', (ws, req) => {
-    ws.on('message', (msg) => {
-        console.log(msg);
-        ws.send(msg);
+    applyTo(Express.Router());
+
+    getWss().clients.forEach((ws) => {
+        if (ws.readyState !== ws.OPEN) {
+            ws.terminate();
+            return;
+        }
+        ws.ping();
     });
-});
 
-export default app;
+    const sockets:{[key: string]: WebSocket} = {};
+
+    // {method:'register', uid;: 'xxxxxxxxx';}
+    // {method: 'post', to: 'xxxxxxx', body: '......';}
+
+    app.ws(path, (ws, req) => {
+        ws.on('message', (msg) => {
+            console.log(msg);
+
+            const m = JSON.parse(msg.toString());
+
+            if (m.method === 'register') {
+                // 登録処理
+                sockets[m.uid] = ws;
+                ws.send(msg);
+            }
+
+            if (m.method === 'post') {
+                sockets[m.to].send(msg);
+            }
+        });
+    });
+};
+
+export default {
+    bind,
+};

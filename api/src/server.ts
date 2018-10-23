@@ -11,7 +11,7 @@ app.use(BodyParser.text());
 app.use(BodyParser.urlencoded());
 
 app.use('/v1/chat/', Chat);
-app.use('/v1/chat/ws', ChatWs);
+ChatWs.bind('/v1/chat/ws/', app);
 
 app.listen(3000, () => {
     console.log('Example app listening on port 3000!');

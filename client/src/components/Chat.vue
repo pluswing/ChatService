@@ -25,6 +25,13 @@ export default class Chat extends Vue {
     public messages: Message[] = [];
 
     mounted() {
+        const connection = new WebSocket('ws://localhost:3000/v1/chat/ws/');
+        connection.onopen = () => {
+            connection.send('hello');
+        };
+        connection.onmessage = (event) => {
+            console.log(event.data);
+        };
     }
 
     @Emit() public close() {
