@@ -1,35 +1,29 @@
 <template>
   <div class="pluswing_chat_service_container">
-      はろー
-      <p>A</p>
-      <b-checkbox>Basic</b-checkbox>
+    <Minimize v-if="minimized" title="チャット" @clicked="show"/>
+    <Chat v-if="!minimized" @close="hide"/>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
+import Chat from './Chat.vue';
+import Minimize from './Minimize.vue';
 
 @Component({
     components: {
+        Chat,
+        Minimize,
     },
 })
 export default class App extends Vue {
-    mounted() {
-        const connection = new WebSocket('ws://localhost:3000');
-        connection.onopen = function () {
-            // メッセージの送信
-            connection.send('こんにちは世界');
-        };
+    private minimized = true;
 
-        // エラーが出た場合
-        connection.onerror = function (error) {
-            console.error(error);
-        };
-
-        // メッセージを受け取った場合
-        connection.onmessage = function (e) {
-            console.log(e);
-        };
+    show() {
+        this.minimized = false;
+    }
+    hide() {
+        this.minimized = true;
     }
 }
 </script>
@@ -41,10 +35,9 @@ export default class App extends Vue {
 </style>
 
 <style scoped lang="scss">
-.hello {
-    font-weight: bold;
-    p {
-        color: green;
-    }
+.pluswing_chat_service_container {
+    position: absolute;
+    right: 20px;
+    bottom: 0px;
 }
 </style>

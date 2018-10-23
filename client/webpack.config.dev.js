@@ -40,8 +40,12 @@ module.exports = {
                     configFile: 'tsconfig.dev.json',
                     appendTsSuffixTo: [/\.vue$/]
                 }
+            },
+            {
+                test: /\.(png)$/,
+                loader: 'url-loader'
             }
-        ]
+        ],
     },
     resolve: {
         extensions: [ '.ts', '.js', '.vue' ],
