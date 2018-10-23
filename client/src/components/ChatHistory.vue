@@ -6,7 +6,7 @@
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator';
 
-@Component()
+@Component({})
 export default class ChatHistory extends Vue {
 }
 </script>
