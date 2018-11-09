@@ -2,6 +2,9 @@ import * as Express from 'express';
 import * as ExpressWs from 'express-ws';
 import * as WebSocket from 'ws';
 
+import { users } from '../repositories/User';
+import { userMessages, UserMessage } from '../repositories/UserMessage';
+
 const bind = (path: string, originalApp: Express.Application) => {
 
     const { app, getWss, applyTo } = ExpressWs(originalApp);
@@ -16,7 +19,7 @@ const bind = (path: string, originalApp: Express.Application) => {
         ws.ping();
     });
 
-    const sockets:{[key: string]: WebSocket} = {};
+    const sockets:{[key: number]: WebSocket} = {};
 
     // {method: 'register', uid: 'xxxxxxxxx'}
     // {method: 'post', to: 'xxxxxxx', body: '......'}
@@ -29,12 +32,15 @@ const bind = (path: string, originalApp: Express.Application) => {
 
             if (m.method === 'register') {
                 // 登録処理
-                sockets[m.uid] = ws;
+                const u = users.findOrCreate(m.uid);
+                sockets[u.id] = ws;
                 ws.send(msg);
             }
 
             if (m.method === 'post') {
-                sockets[m.to].send(msg);
+                const u = users.findOrCreate(m.to);
+                userMessages.add(new UserMessage(u.id, m.message));
+                sockets[u.id].send(msg);
             }
         });
     });

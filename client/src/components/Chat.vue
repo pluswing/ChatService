@@ -12,6 +12,7 @@ import Header from './Header.vue';
 import ChatHistory from './ChatHistory.vue';
 import ChatInputForm from './ChatInputForm.vue';
 import { Message } from '../models/Message';
+import axios from 'axios';
 
 @Component({
     components: {
@@ -25,10 +26,9 @@ export default class Chat extends Vue {
 
     public messages: Message[] = [];
 
-    private connection: WebSocket;
+    private connection = new WebSocket('ws://localhost:3000/v1/chat/ws/');
 
-    created() {
-        this.connection = new WebSocket('ws://localhost:3000/v1/chat/ws/');
+    async created() {
         this.connection.onopen = () => {
             this.connection.send(JSON.stringify({
                 method: 'register',
@@ -45,6 +45,16 @@ export default class Chat extends Vue {
                 this.messages.push(message);
             }
         };
+
+        // load histories
+        const res = await axios.post('http://localhost:3000/v1/chat/histories', {
+            uid: this.uid,
+        });
+        res.data.forEach((um) => {
+            const mm = new Message(um.body);
+            mm.id = um.id;
+            this.messages.push(mm);
+        });
     }
 
     @Emit() public close() {}
@@ -56,7 +66,7 @@ export default class Chat extends Vue {
     public async send(input: string) {
         this.connection.send(JSON.stringify({
             method: 'post',
-            to: this.uid,
+            to: 'dc3914f3-c8ec-4504-a50e-7dd1c6383d83',
             message: input,
         }));
     }
