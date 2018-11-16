@@ -31,7 +31,7 @@ class OperatorMemory implements OperatorRepository {
     private operators: { [key: string]: Operator } = {};
 
     create(name: string, loginId: string, password: string): Operator {
-        if (!this.availableLoginId(loginId)) {
+        if (this.availableLoginId(loginId)) {
             throw new Error('already login id'); // FIXME
         }
         if (this.operators[loginId]) {

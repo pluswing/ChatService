@@ -3,6 +3,7 @@ import * as BodyParser from 'body-parser';
 
 import Chat from './routes/Chat';
 import ChatWs from './routes/ChatWs';
+import Operator from './routes/Operator';
 
 const app = Express();
 app.use(BodyParser.json());
@@ -24,6 +25,7 @@ app.options('*', (req, res) => {
 
 app.use('/v1/chat/', Chat);
 ChatWs.bind('/v1/chat/ws/', app);
+app.use('/v1/operator', Operator);
 
 app.listen(3000, () => {
     console.log('Example app listening on port 3000!');
