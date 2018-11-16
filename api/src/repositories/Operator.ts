@@ -24,10 +24,11 @@ export interface OperatorRepository {
     availableLoginId(loginId: string): boolean;
     update(operator: Operator): Operator;
     login(loginId: string, password: string): Operator;
+    find(loginId: string): Operator | null;
 }
 
 class OperatorMemory implements OperatorRepository {
-    private operators: {[key: string]: Operator} = {};
+    private operators: { [key: string]: Operator } = {};
 
     create(name: string, loginId: string, password: string): Operator {
         if (!this.availableLoginId(loginId)) {
@@ -63,6 +64,10 @@ class OperatorMemory implements OperatorRepository {
         }
         return o;
     }
+    find(loginId: string): Operator | null {
+        return this.operators[loginId];
+    }
+
 }
 
-export const operators : OperatorRepository = new OperatorMemory();
+export const operators: OperatorRepository = new OperatorMemory();
