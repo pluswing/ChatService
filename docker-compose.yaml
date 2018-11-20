@@ -3,7 +3,7 @@ services:
   api:
     build: ./api
     user: "${UID}:${GID}"
-    working_dir: "${HOME}"
+    working_dir: "${HOME}/api"
     tty: true
     links:
       - mysql
@@ -11,27 +11,27 @@ services:
       - "./api:${HOME}/api"
     ports:
       - "3000:3000"
-    command: "node"
+    command: "npm run dev"
   client:
     build: ./client
     user: "${UID}:${GID}"
-    working_dir: "${HOME}"
+    working_dir: "${HOME}/client"
     tty: true
     volumes:
       - "./client:${HOME}/client"
     ports:
       - "3001:3001"
-    command: "node"
+    command: "sh ./run.sh"
   operator:
     build: ./operator
     user: "${UID}:${GID}"
-    working_dir: "${HOME}"
+    working_dir: "${HOME}/operator"
     tty: true
     volumes:
       - "./operator:${HOME}/operator"
     ports:
       - "3002:3002"
-    command: "node"
+    command: "npm run serve"
   mysql:
     build: ./mysql
     user: "${UID}:${GID}"
