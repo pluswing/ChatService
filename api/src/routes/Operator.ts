@@ -44,6 +44,7 @@ app.post('/authenticate', (req, res) => {
         const token = jwt.sign({ sub: operator.loginId }, secret, signOptions);
         res.json({
             token,
+            operator,
             success: true,
         });
     } catch (e) {

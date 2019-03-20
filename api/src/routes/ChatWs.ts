@@ -2,8 +2,11 @@ import * as Express from 'express';
 import * as ExpressWs from 'express-ws';
 import * as WebSocket from 'ws';
 
-import { users } from '../repositories/User';
 import { userMessages, UserMessage } from '../repositories/UserMessage';
+import { operators } from '../repositories/Operator';
+import { users } from '../repositories/User';
+import { responsibles } from '../repositories/Responsible';
+import { Roundrobin } from '../operators/Roundrobin';
 
 const bind = (path: string, originalApp: Express.Application) => {
 
@@ -19,7 +22,7 @@ const bind = (path: string, originalApp: Express.Application) => {
         ws.ping();
     });
 
-    const sockets:{[key: number]: WebSocket} = {};
+    const sockets: { [key: number]: WebSocket } = {};
 
     // {method: 'register', uid: 'xxxxxxxxx'}
     // {method: 'post', to: 'xxxxxxx', body: '......'}
@@ -38,9 +41,17 @@ const bind = (path: string, originalApp: Express.Application) => {
             }
 
             if (m.method === 'post') {
+                // FIXME FIRST_RESPONDER
+                // FOR TEST
+                const r = new Roundrobin(operators, responsibles);
                 const u = users.findOrCreate(m.to);
-                userMessages.add(new UserMessage(u.id, m.message));
-                sockets[u.id].send(msg);
+                const um = new UserMessage(u.id, m.message);
+                userMessages.add(um);
+                r.onMessage(u, um);
+
+                // const u = users.findOrCreate(m.to);
+                // userMessages.add(new UserMessage(u.id, m.message));
+                // sockets[u.id].send(msg);
             }
         });
     });

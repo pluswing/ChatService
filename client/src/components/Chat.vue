@@ -1,81 +1,84 @@
 <template>
   <div class="chat_container">
-      <Header title="チャット" @close="onClickClose"/>
-      <ChatHistory :messages="messages"/>
-      <ChatInputForm @send="send"/>
+    <Header title="チャット" @close="onClickClose"/>
+    <ChatHistory :messages="messages"/>
+    <ChatInputForm @send="send"/>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Emit, Prop, Vue } from 'vue-property-decorator';
-import Header from './Header.vue';
-import ChatHistory from './ChatHistory.vue';
-import ChatInputForm from './ChatInputForm.vue';
-import { Message } from '../models/Message';
-import axios from 'axios';
+import { Component, Emit, Prop, Vue } from "vue-property-decorator";
+import Header from "./Header.vue";
+import ChatHistory from "./ChatHistory.vue";
+import ChatInputForm from "./ChatInputForm.vue";
+import { Message } from "../models/Message";
+import axios from "axios";
 
 @Component({
-    components: {
-        Header,
-        ChatHistory,
-        ChatInputForm,
-    },
+  components: {
+    Header,
+    ChatHistory,
+    ChatInputForm
+  }
 })
 export default class Chat extends Vue {
-    @Prop() private uid!: string;
+  @Prop() private uid!: string;
 
-    public messages: Message[] = [];
+  public messages: Message[] = [];
 
-    private connection = new WebSocket('ws://localhost:3000/v1/chat/ws/');
+  private connection = new WebSocket("ws://localhost:3000/v1/chat/ws/");
 
-    async created() {
-        this.connection.onopen = () => {
-            this.connection.send(JSON.stringify({
-                method: 'register',
-                uid: this.uid,
-            }));
-        };
+  async created() {
+    this.connection.onopen = () => {
+      this.connection.send(
+        JSON.stringify({
+          method: "register",
+          uid: this.uid
+        })
+      );
+    };
 
-        this.connection.onmessage = (event) => {
-            console.log(event.data);
-            const data = JSON.parse(event.data);
-            if (data.method === 'post') {
-                const message = new Message(data.message);
-                message.id = this.messages.length + 1;
-                this.messages.push(message);
-            }
-        };
+    this.connection.onmessage = event => {
+      console.log(event.data);
+      const data = JSON.parse(event.data);
+      if (data.method === "post") {
+        const message = new Message(data.message);
+        message.id = this.messages.length + 1;
+        this.messages.push(message);
+      }
+    };
 
-        // load histories
-        const res = await axios.post('http://localhost:3000/v1/chat/histories', {
-            uid: this.uid,
-        });
-        res.data.forEach((um) => {
-            const mm = new Message(um.body);
-            mm.id = um.id;
-            this.messages.push(mm);
-        });
-    }
+    // load histories
+    const res = await axios.post("http://localhost:3000/v1/chat/histories", {
+      uid: this.uid
+    });
+    res.data.forEach(um => {
+      const mm = new Message(um.body);
+      mm.id = um.id;
+      this.messages.push(mm);
+    });
+  }
 
-    @Emit() public close() {}
+  @Emit() public close() {}
 
-    public onClickClose() {
-        this.close();
-    }
+  public onClickClose() {
+    this.close();
+  }
 
-    public async send(input: string) {
-        this.connection.send(JSON.stringify({
-            method: 'post',
-            to: 'dc3914f3-c8ec-4504-a50e-7dd1c6383d83',
-            message: input,
-        }));
-    }
+  public async send(input: string) {
+    this.connection.send(
+      JSON.stringify({
+        method: "post",
+        message: input
+      })
+    );
+  }
 }
 </script>
 
 <style scoped lang="scss">
 .chat_container {
-    width: 380px;
-    background-color: white;
+  width: 380px;
+  background-color: white;
 }
 </style>

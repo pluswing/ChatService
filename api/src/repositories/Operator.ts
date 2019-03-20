@@ -25,6 +25,7 @@ export interface OperatorRepository {
     update(operator: Operator): Operator;
     login(loginId: string, password: string): Operator;
     find(loginId: string): Operator | null;
+    findAll(): Operator[];
 }
 
 class OperatorMemory implements OperatorRepository {
@@ -68,6 +69,11 @@ class OperatorMemory implements OperatorRepository {
         return this.operators[loginId];
     }
 
+    findAll(): Operator[] {
+        return Object.keys(this.operators).map((k: string) => {
+            return this.operators[k];
+        });
+    }
 }
 
 export const operators: OperatorRepository = new OperatorMemory();
