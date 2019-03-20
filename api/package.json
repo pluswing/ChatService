@@ -30,7 +30,7 @@
     "webpack-node-externals": "^1.7.2"
   },
   "scripts": {
-    "dev": "./node_modules/.bin/nodemon",
+    "dev": "npm install && ./node_modules/.bin/nodemon",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "pluswing Inc.",
