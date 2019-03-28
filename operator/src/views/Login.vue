@@ -11,20 +11,20 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
-import { Mutation } from "vuex-class";
-import { Operator } from "@/models/Operator";
-import { Login as LoginUsecase } from "@/usecases/Login";
-import { LoginApi } from "@/repositories/LoginApi";
+import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Mutation } from 'vuex-class';
+import { Operator } from '@/models/Operator';
+import { Login as LoginUsecase } from '@/usecases/Login';
+import { LoginApi } from '@/repositories/LoginApi';
 
-const loginUsecase = new LoginUsecase(new LoginApi("http://localhost:3000"));
+const loginUsecase = new LoginUsecase(new LoginApi('http://localhost:3000'));
 
 @Component
 export default class Login extends Vue {
-  @Mutation("operator/loggedIn") public loggedIn!: (payload: any) => void;
-  private message = "";
-  private loginid = "";
-  private password = "";
+  @Mutation('operator/loggedIn') public loggedIn!: (payload: any) => void;
+  private message = '';
+  private loginid = '';
+  private password = '';
 
   public async login() {
     const o = new Operator(this.loginid, this.password);
@@ -32,7 +32,7 @@ export default class Login extends Vue {
 
     if (o.isLoggedIn()) {
       this.loggedIn(o);
-      this.$router.replace({ name: "chat" });
+      this.$router.replace({ name: 'chat' });
     }
   }
 }

@@ -1,6 +1,6 @@
 import { Base } from './Base';
 import { UserMessage } from '../repositories/UserMessage';
-import { Operator, OperatorRepository } from '../repositories/Operator';
+import { OperatorRepository } from '../repositories/Operator';
 import { Responsible, ResponsibleRepository } from '../repositories/Responsible';
 import { User } from '../repositories/User';
 

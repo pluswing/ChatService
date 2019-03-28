@@ -1,7 +1,7 @@
-CREATE TAVLE users (
+CREATE TABLE users (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    uid VARCHAR(50) NOT NULL
-    KEY (uid)
+    uid VARCHAR(50) NOT NULL,
+    UNIQUE KEY (uid)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE user_messages (
@@ -9,8 +9,9 @@ CREATE TABLE user_messages (
     user_id BIGINT NOT NULL,
     body TEXT NOT NULL,
     created_at DATETIME NOT NULL,
-    operator_id BIGINT
+    operator_id BIGINT,
     KEY (user_id),
+    KEY (operator_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE operators (
