@@ -1,3 +1,4 @@
+import db from './db';
 
 export class User {
     id: number = 0;
@@ -8,13 +9,13 @@ export class User {
 }
 
 export interface UserRepository {
-    findOrCreate(uid: string): User;
+    findOrCreate(uid: string): Promise<User | null>;
 }
 
 class UserMemory implements UserRepository {
-    private users: {[key: string]: User} = {};
+    private users: { [key: string]: User } = {};
 
-    findOrCreate(uid: string): User {
+    async findOrCreate(uid: string): Promise<User | null> {
         if (this.users[uid]) {
             return this.users[uid];
         }
@@ -25,4 +26,17 @@ class UserMemory implements UserRepository {
     }
 }
 
-export const users : UserRepository = new UserMemory();
+export class UserDAO implements UserRepository {
+
+    async findOrCreate(uid: string): Promise<User | null> {
+        const query = 'SELECT * FROM users WHERE uid = ?';
+        const [rows, fields] = await db().execute(query, [uid]);
+        console.log(fields);
+        if (rows.length === 0) return null;
+        const u = new User(rows[0].uid);
+        u.id = rows[0].id;
+        return u;
+    }
+}
+
+export const users: UserRepository = new UserMemory();
