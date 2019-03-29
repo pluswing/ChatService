@@ -1,8 +1,9 @@
 import * as mysql from 'mysql2/promise';
+import { RowDataPacket, OkPacket } from 'mysql2/promise';
 
 let pool: mysql.Pool | null = null;
 
-export default (): mysql.Pool => {
+export const getPool = (): mysql.Pool => {
     if (pool !== null) return pool;
 
     pool = mysql.createPool({
@@ -15,4 +16,14 @@ export default (): mysql.Pool => {
         queueLimit: 0,
     });
     return pool;
+};
+
+export const select = async (query: string, params: any[]): Promise<RowDataPacket[]> => {
+    const res = await getPool().execute(query, params);
+    return res[0] as RowDataPacket[];
+};
+
+export const insert = async (query: string, params: any[]): Promise<OkPacket> => {
+    const res = await getPool().execute(query, params);
+    return res[0] as OkPacket;
 };
