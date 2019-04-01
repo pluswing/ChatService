@@ -1,8 +1,8 @@
-import { UserDAO } from './User';
+import { UserMessageDAO, UserMessage } from './UserMessage';
 
-const dao = new UserDAO();
+const dao = new UserMessageDAO();
 
-dao.findOrCreate('12').then((r) => {
-    console.log('*** RES ***');
-    console.log(r);
+dao.add(new UserMessage(5, 'bbbb')).then(async () => {
+    const rows = await dao.histories(5);
+    console.log(rows);
 });

@@ -1,12 +1,11 @@
-import * as mysql from 'mysql2/promise';
-import { RowDataPacket, OkPacket } from 'mysql2/promise';
+import { createPool, Pool, RowDataPacket, OkPacket } from 'mysql2/promise';
 
-let pool: mysql.Pool | null = null;
+let pool: Pool | null = null;
 
-export const getPool = (): mysql.Pool => {
+export const getPool = (): Pool => {
     if (pool !== null) return pool;
 
-    pool = mysql.createPool({
+    pool = createPool({
         host: 'mysql',
         user: 'root',
         password: 'root',
