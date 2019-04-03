@@ -26,3 +26,8 @@ export const insert = async (query: string, params: any[]): Promise<OkPacket> =>
     const res = await getPool().execute(query, params);
     return res[0] as OkPacket;
 };
+
+export const update = async (query: string, params: any[]): Promise<OkPacket> => {
+    const res = await getPool().execute(query, params);
+    return res[0] as OkPacket;
+};
