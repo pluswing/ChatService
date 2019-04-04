@@ -41,7 +41,34 @@ export const insert = async (
     return res[0] as OkPacket;
 };
 
-export const update = async (query: string, params: any[]): Promise<OkPacket> => {
+export const generateUpdateStatement = (
+    tableName: string,
+    setParams: { [key: string]: any },
+    where: { [key: string]: any },
+): [string, any[]] => {
+
+    const keys = Object.keys(setParams);
+    const sets = keys.map(k => `${k} = ?`);
+    const wkeys = Object.keys(where);
+    const ws = wkeys.map(k => `${k} = ?`);
+
+    const sql = `UPDATE ${tableName} SET
+        ${sets.join(', ')}
+        WHERE ${ws.join(' AND ')}`;
+
+    const params = keys.map(k => setParams[k]);
+    const wp = wkeys.map(k => where[k]);
+    wp.forEach((w) => {
+        params.push(w);
+    });
+    return [sql, params];
+};
+
+export const update = async (
+    tableName: string,
+    setParams: { [key: string]: any },
+    where: { [key: string]: any }): Promise<OkPacket> => {
+    const [query, params] = generateUpdateStatement(tableName, setParams, where);
     const res = await getPool().execute(query, params);
     return res[0] as OkPacket;
 };

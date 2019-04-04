@@ -128,15 +128,13 @@ export class OperatorDAO implements OperatorRepository {
             }
         }
 
-        const updateQuery = `UPDATE operators
-        SET
-            name = ?,
-            login_id = ?,
-            password = ?
-        WHERE id = ?`;
-        await update(updateQuery, [
-            operator.name, operator.loginId,
-            operator.getDigestedPassword(), operator.id]);
+        await update('operators', {
+            name: operator.name,
+            login_id: operator.loginId,
+            password: operator.getDigestedPassword(),
+        }, {
+                id: operator.id,
+            });
         return operator;
     }
 
