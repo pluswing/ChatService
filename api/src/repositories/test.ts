@@ -1,8 +1,33 @@
-import { UserMessageDAO, UserMessage } from './UserMessage';
+import { OperatorDAO } from './Operator';
 
-const dao = new UserMessageDAO();
-
-dao.add(new UserMessage(5, 'bbbb')).then(async () => {
-    const rows = await dao.histories(5);
-    console.log(rows);
+const dao = new OperatorDAO();
+/*
+dao.create('hoge', 'loginId001', 'password').then((o) => {
+    console.log(o);
 });
+*/
+/*
+dao.availableLoginId('loginId001').then((b) => {
+    console.log(b);
+});
+*/
+
+dao.find('loginId003').then(async (o) => {
+    if (!o) {
+        console.log('not found.');
+        return;
+    }
+    // o.name = 'aaa';
+    // o.password = 'hoge'; // NG
+    // o.changePassword('hoge'); // OK
+    o.loginId = 'loginId002';
+    await dao.update(o);
+    const os = await dao.findAll();
+    console.log(os);
+});
+
+/*
+dao.login('loginId001', 'passworda').then((o) => {
+    console.log(o);
+});
+*/

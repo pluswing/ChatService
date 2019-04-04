@@ -5,7 +5,7 @@ export class Operator {
     id: number = 0;
     name: string;
     loginId: string;
-    password: string;
+    private password: string;
     constructor(name: string, loginId: string, password: string) {
         this.name = name;
         this.loginId = loginId;
@@ -21,6 +21,14 @@ export class Operator {
 
     changePassword(newPassword: string) {
         this.password = this.toDigest(newPassword);
+    }
+
+    getDigestedPassword() {
+        return this.password;
+    }
+
+    setDigestedPassword(password: string) {
+        this.password = password;
     }
 }
 
@@ -65,7 +73,7 @@ class OperatorMemory implements OperatorRepository {
         if (!o) {
             throw new Error('operator not found');
         }
-        if (o.password !== o.toDigest(password)) {
+        if (o.getDigestedPassword() !== o.toDigest(password)) {
             throw new Error('invalid password');
         }
         return o;
@@ -81,11 +89,11 @@ class OperatorMemory implements OperatorRepository {
     }
 }
 
-class OperatorDAO implements OperatorRepository {
+export class OperatorDAO implements OperatorRepository {
 
     async create(name: string, loginId: string, password: string): Promise<Operator> {
         if (!await this.availableLoginId(loginId)) {
-            throw new Error('already login id'); // FIXME
+            throw new Error('already login id');
         }
         let operator = await this.find(loginId);
         if (operator) {
@@ -100,23 +108,38 @@ class OperatorDAO implements OperatorRepository {
             (?, ?, ?)
         `;
         operator = new Operator(name, loginId, password);
-        await insert(query, [operator.name, operator.loginId, operator.password]);
+        await insert(query, [operator.name, operator.loginId, operator.getDigestedPassword()]);
         operator = await this.find(loginId);
         return operator!!;
     }
 
     async availableLoginId(loginId: string): Promise<boolean> {
-        return !this.find(loginId);
+        return ! await this.find(loginId);
     }
 
     async update(operator: Operator): Promise<Operator> {
-        const query = `UPDATE operators
+        const query = 'SELECT * FROM operators WHERE id = ?';
+        const rows = await select(query, [operator.id]);
+
+        if (rows.length === 0) {
+            throw new Error('operator not found');
+        }
+
+        if (rows[0].login_id !== operator.loginId) {
+            if (!await this.availableLoginId(operator.loginId)) {
+                throw new Error('already login id');
+            }
+        }
+
+        const updateQuery = `UPDATE operators
         SET
             name = ?,
             login_id = ?,
             password = ?
         WHERE id = ?`;
-        await update(query, [operator.name, operator.loginId, operator.password, operator.id]);
+        await update(updateQuery, [
+            operator.name, operator.loginId,
+            operator.getDigestedPassword(), operator.id]);
         return operator;
     }
 
@@ -125,7 +148,7 @@ class OperatorDAO implements OperatorRepository {
         if (!o) {
             throw new Error('operator not found');
         }
-        if (o.password !== o.toDigest(password)) {
+        if (o.getDigestedPassword() !== o.toDigest(password)) {
             throw new Error('invalid password');
         }
         return o;
@@ -136,7 +159,7 @@ class OperatorDAO implements OperatorRepository {
         const rows = await select(query, [loginId]);
         if (rows.length === 0) return null;
         const o = new Operator(rows[0].name, rows[0].login_id, '');
-        o.password = rows[0].password;
+        o.setDigestedPassword(rows[0].password);
         o.id = rows[0].id;
         return o;
     }
@@ -146,7 +169,7 @@ class OperatorDAO implements OperatorRepository {
         const rows = await select(query, []);
         return rows.map((r) => {
             const o = new Operator(r.name, r.login_id, '');
-            o.password = rows[0].password;
+            o.setDigestedPassword(r.password);
             o.id = r.id;
             return o;
         });
