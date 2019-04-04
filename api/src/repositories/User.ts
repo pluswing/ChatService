@@ -32,8 +32,7 @@ export class UserDAO implements UserRepository {
         const selectQuery = 'SELECT * FROM users WHERE uid = ?';
         let rows = await select(selectQuery, [uid]);
         if (rows.length === 0) {
-            const insertQuery = 'INSERT INTO users (uid) VALUES (?)';
-            await insert(insertQuery, [uid]);
+            await insert('users', { uid });
             rows = await select(selectQuery, [uid]);
         }
         const u = new User(rows[0].uid);

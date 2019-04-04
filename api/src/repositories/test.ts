@@ -1,33 +1,7 @@
-import { OperatorDAO } from './Operator';
+import { UserDAO } from './User';
 
-const dao = new OperatorDAO();
-/*
-dao.create('hoge', 'loginId001', 'password').then((o) => {
-    console.log(o);
-});
-*/
-/*
-dao.availableLoginId('loginId001').then((b) => {
-    console.log(b);
-});
-*/
+const dao = new UserDAO();
 
-dao.find('loginId003').then(async (o) => {
-    if (!o) {
-        console.log('not found.');
-        return;
-    }
-    // o.name = 'aaa';
-    // o.password = 'hoge'; // NG
-    // o.changePassword('hoge'); // OK
-    o.loginId = 'loginId002';
-    await dao.update(o);
-    const os = await dao.findAll();
-    console.log(os);
+dao.findOrCreate('123445566').then((r) => {
+    console.log(r);
 });
-
-/*
-dao.login('loginId001', 'passworda').then((o) => {
-    console.log(o);
-});
-*/

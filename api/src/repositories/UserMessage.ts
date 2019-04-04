@@ -49,15 +49,12 @@ export class UserMessageDAO implements UserMessageRepository {
     }
 
     async add(userMessage: UserMessage): Promise<void> {
-        const query = `
-        INSERT INTO user_messages
-            (user_id, body, created_at, operator_id)
-            VALUES
-            (?, ?, ?, ?)
-        `;
-        await insert(query, [
-            userMessage.userId, userMessage.body,
-            userMessage.createdAt, userMessage.operatorId]);
+        await insert('user_messages', {
+            user_id: userMessage.userId,
+            body: userMessage.body,
+            created_at: userMessage.createdAt,
+            operator_id: userMessage.operatorId,
+        });
     }
 }
 

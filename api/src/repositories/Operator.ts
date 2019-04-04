@@ -100,15 +100,12 @@ export class OperatorDAO implements OperatorRepository {
             return operator;
         }
 
-        const query = `
-        INSERT INTO
-            operators
-            (name, login_id, password)
-            VALUES
-            (?, ?, ?)
-        `;
         operator = new Operator(name, loginId, password);
-        await insert(query, [operator.name, operator.loginId, operator.getDigestedPassword()]);
+        await insert('operators', {
+            name: operator.name,
+            login_id: operator.loginId,
+            password: operator.getDigestedPassword(),
+        });
         operator = await this.find(loginId);
         return operator!!;
     }
