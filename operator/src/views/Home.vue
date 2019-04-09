@@ -1,8 +1,12 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
-  </div>
+  <v-app>
+    <v-content>
+      <v-btn color="success">Success</v-btn>
+      <v-btn color="error">Error</v-btn>
+      <v-btn color="warning">Warning</v-btn>
+      <v-btn color="info">Info</v-btn>
+    </v-content>
+  </v-app>
 </template>
 
 <script lang="ts">
