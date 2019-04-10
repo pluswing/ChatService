@@ -1,8 +1,8 @@
 <template>
-  <div class="home">
+  <v-container>
     <ChatHistory :messages="messages"/>
     <ChatInputForm @send="send"/>
-  </div>
+  </v-container>
 </template>
 
 <script lang="ts">

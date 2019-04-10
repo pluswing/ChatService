@@ -1,8 +1,11 @@
 <template>
-  <div class="hello">
-    <textarea v-model="input"></textarea>
-    <button @click="onClickSend">SEND</button>
-  </div>
+  <v-layout>
+    <v-layout row>
+      <v-flex offset-xs2 xs8>
+        <v-textarea v-model="input" v-on:keyup.enter="onClickSend()" solo rows="2" value></v-textarea>
+      </v-flex>
+    </v-layout>
+  </v-layout>
 </template>
 
 <script lang="ts">
@@ -12,7 +15,7 @@ import { Component, Prop, Vue, Emit } from 'vue-property-decorator';
 export default class ChatInputForm extends Vue {
   public input: string = '';
 
-  @Emit() public send(input: string) {}
+  @Emit() public send(input: string) { }
 
   public onClickSend() {
     this.send(this.input);
