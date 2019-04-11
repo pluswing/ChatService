@@ -24,14 +24,20 @@ const sendChat = new SendChat(new ChatApi(''));
 export default class Chat extends Vue {
   public messages: Message[] = [];
 
+  private isOperatorMessage = false;
+
   public mounted() {
     sendChat.onNewMessage = (m: Message) => {
       this.messages.push(m);
     };
   }
-
   public async send(input: string) {
-    await sendChat.post(new Message(input));
+    const m = new Message(input);
+    if (this.isOperatorMessage) {
+      m.operatorId = 1;
+    }
+    await sendChat.post(m);
+    this.isOperatorMessage = !this.isOperatorMessage;
   }
 }
 </script>
