@@ -18,6 +18,9 @@ export default class ChatInputForm extends Vue {
   @Emit() public send(input: string) { }
 
   public onClickSend() {
+    if (this.input.trim() === '') {
+      return;
+    }
     this.send(this.input);
     this.input = '';
   }

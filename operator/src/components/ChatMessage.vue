@@ -1,20 +1,22 @@
 <template>
   <v-layout justify-start pb-3>
     <!-- user message -->
-    <v-flex xs8 text-xs-right v-if="!message.operatorId">
+    <v-flex xs8 text-xs-left v-if="!message.operatorId">
       <v-card color="blue-grey lighten-4">
         <v-card-text>
-          <p class="text-xs-left">{{message.message}}</p>
+          {{message.message}}
+          <div class="text-xs-right">{{message.date()}}</div>
         </v-card-text>
       </v-card>
     </v-flex>
 
     <!-- operator message -->
     <v-layout justify-end pb-3 v-if="message.operatorId">
-      <v-flex xs8>
+      <v-flex xs8 text-xs-right>
         <v-card color="teal lighten-3">
           <v-card-text>
-            <p class="text-xs-right">{{message.message}}</p>
+            {{message.message}}
+            <div class="text-xs-right">{{message.date()}}</div>
           </v-card-text>
         </v-card>
       </v-flex>
