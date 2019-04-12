@@ -4,9 +4,9 @@ import { userMessages } from '../repositories/UserMessage';
 
 const app = Express();
 
-app.post('/histories', (req, res) => {
+app.post('/histories', async (req, res) => {
     const uid = req.body.uid;
-    const u = users.findOrCreate(uid);
+    const u = await users.findOrCreate(uid);
     return res.json(userMessages.histories(u.id));
 });
 

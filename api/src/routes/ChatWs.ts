@@ -28,14 +28,14 @@ const bind = (path: string, originalApp: Express.Application) => {
     // {method: 'post', to: 'xxxxxxx', body: '......'}
 
     app.ws(path, (ws, req) => {
-        ws.on('message', (msg) => {
+        ws.on('message', async (msg) => {
             console.log(msg);
 
             const m = JSON.parse(msg.toString());
 
             if (m.method === 'register') {
                 // 登録処理
-                const u = users.findOrCreate(m.uid);
+                const u = await users.findOrCreate(m.uid);
                 sockets[u.id] = ws;
                 ws.send(msg);
             }
@@ -44,7 +44,7 @@ const bind = (path: string, originalApp: Express.Application) => {
                 // FIXME FIRST_RESPONDER
                 // FOR TEST
                 const r = new Roundrobin(operators, responsibles);
-                const u = users.findOrCreate(m.to);
+                const u = await users.findOrCreate(m.to);
                 const um = new UserMessage(u.id, m.message);
                 userMessages.add(um);
                 r.onMessage(u, um);

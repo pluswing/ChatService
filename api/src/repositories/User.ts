@@ -10,6 +10,7 @@ export class User {
 
 export interface UserRepository {
     findOrCreate(uid: string): Promise<User>;
+    list(): Promise<User[]>;
 }
 
 class UserMemory implements UserRepository {
@@ -23,6 +24,9 @@ class UserMemory implements UserRepository {
         u.id = Object.keys(this.users).length + 1;
         this.users[uid] = u;
         return u;
+    }
+    async list(): Promise<User[]> {
+        return Object.values(this.users);
     }
 }
 
@@ -39,6 +43,16 @@ export class UserDAO implements UserRepository {
         u.id = rows[0].id;
         return u;
     }
+    async list(): Promise<User[]> {
+        const query = 'SELECT * FROM users ORDER BY id';
+        const rows = await select(query, []);
+        return rows.map((r) => {
+            const u = new User(r.uid);
+            u.id = r.id;
+            return u;
+        });
+    }
+
 }
 
 export const users: UserRepository = new UserMemory();

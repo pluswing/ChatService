@@ -7,6 +7,7 @@ import {
     Strategy as JwtStrategy,
     ExtractJwt,
 } from 'passport-jwt';
+import { UserDAO } from '../repositories/User';
 
 // for TEST
 operators.create('hogehoge', 'hoge', 'fuga');
@@ -35,12 +36,12 @@ const app = Express();
 app.use(passport.initialize());
 
 // unsecure API
-app.post('/authenticate', (req, res) => {
+app.post('/authenticate', async (req, res) => {
     // LOGIN token発行
     const loginId = req.body.loginid;
     const password = req.body.password;
     try {
-        const operator = operators.login(loginId, password);
+        const operator = await operators.login(loginId, password);
         const token = jwt.sign({ sub: operator.loginId }, secret, signOptions);
         res.json({
             token,
@@ -56,14 +57,13 @@ app.post('/authenticate', (req, res) => {
 });
 
 app.use(passport.authenticate('jwt', { session: false }));
+
 // secure API
-app.post('/hoge', (req, res) => {
-    // ログイン必須API
-    res.json({ succes: true });
-});
-app.post('/fuga', (req, res) => {
-    // ログイン必須API
-    res.json({ succes: true });
+
+app.post('/users', async (req, res) => {
+    const repo = new UserDAO();
+    const users = await repo.list();
+    res.json({ users });
 });
 
 export default app;
