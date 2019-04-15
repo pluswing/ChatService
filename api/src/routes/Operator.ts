@@ -57,8 +57,6 @@ app.post('/authenticate', async (req, res) => {
     }
 });
 
-app.use(passport.authenticate('jwt', { session: false }));
-
 // secure API
 
 app.post('/users', async (req, res) => {
@@ -74,5 +72,14 @@ app.post('/users', async (req, res) => {
     }
     res.json({ data });
 });
+
+app.post('/messages', async (req, res) => {
+    const id = req.body.id;
+    const mrepo = new UserMessageDAO();
+    const messages = await mrepo.histories(id);
+    return res.json({ messages });
+});
+
+app.use(passport.authenticate('jwt', { session: false }));
 
 export default app;
