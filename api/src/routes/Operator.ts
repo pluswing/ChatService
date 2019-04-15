@@ -8,6 +8,7 @@ import {
     ExtractJwt,
 } from 'passport-jwt';
 import { UserDAO } from '../repositories/User';
+import { UserMessageDAO } from '../repositories/UserMessage';
 
 // for TEST
 operators.create('hogehoge', 'hoge', 'fuga');
@@ -62,8 +63,16 @@ app.use(passport.authenticate('jwt', { session: false }));
 
 app.post('/users', async (req, res) => {
     const repo = new UserDAO();
+    const mrepo = new UserMessageDAO();
     const users = await repo.list();
-    res.json({ users });
+    const data: any[] = [];
+    for (const user of users) {
+        const row: { [key: string]: any } = {};
+        row.user = user;
+        row.message = await mrepo.latestMessage(user);
+        data.push(row);
+    }
+    res.json({ data });
 });
 
 export default app;

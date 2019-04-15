@@ -1,4 +1,5 @@
 import { insert, select } from './db';
+import { User } from './User';
 
 export class UserMessage {
     id: number = 0;
@@ -18,6 +19,7 @@ export class UserMessage {
 export interface UserMessageRepository {
     histories(userId: number): Promise<UserMessage[]>;
     add(userMessage: UserMessage): Promise<void>;
+    latestMessage(user: User): Promise<UserMessage>;
 }
 
 class UserMessageMemory implements UserMessageRepository {
@@ -32,6 +34,10 @@ class UserMessageMemory implements UserMessageRepository {
             this.messages[userMessage.userId] = [];
         }
         this.messages[userMessage.userId].push(userMessage);
+    }
+    async latestMessage(user: User): Promise<UserMessage> {
+        const list = await this.histories(user.id);
+        return list[list.length - 1];
     }
 }
 
@@ -56,6 +62,20 @@ export class UserMessageDAO implements UserMessageRepository {
             operator_id: userMessage.operatorId,
         });
     }
+
+    async latestMessage(user: User): Promise<UserMessage> {
+        const query = 'SELECT * FROM user_messages WHERE user_id = ? ORDER BY id DESC limit 1';
+        const rows = await select(query, [user.id]);
+        if (rows.length === 0) {
+            throw new Error('illigal state');
+        }
+        const m = new UserMessage(rows[0].user_id, rows[0].body);
+        m.id = rows[0].id;
+        m.createdAt = rows[0].created_at;
+        m.operatorId = rows[0].operator_id;
+        return m;
+    }
+
 }
 
 export const userMessages: UserMessageRepository = new UserMessageMemory();
