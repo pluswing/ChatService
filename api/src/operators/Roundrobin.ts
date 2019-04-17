@@ -18,14 +18,13 @@ export class Roundrobin implements Base {
         this.index = 0;
     }
 
-    onMessage(user: User, message: UserMessage): void {
-        const os = this.operatorRepository.findAll();
+    async onMessage(user: User, message: UserMessage): Promise<void> {
+        const os = await this.operatorRepository.findAll();
         const index = this.index % os.length;
         this.index = index + 1;
         const target = os[index];
         const r = new Responsible(user, target);
         this.responsiveRepository.associate(r);
-
     }
 
 }
