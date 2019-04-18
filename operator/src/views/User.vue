@@ -14,6 +14,8 @@ import UserStatus from '@/components/UserStatus.vue';
 import { Message } from '../models/Message';
 import { User } from '../models/User';
 import axios from 'axios';
+import { State } from 'vuex-class';
+import { OperatorState } from '../store/operator';
 
 @Component({
   components: {
@@ -22,9 +24,17 @@ import axios from 'axios';
 })
 export default class Home extends Vue {
   public users: User[] = [];
+  @State('operator') public operator!: OperatorState;
 
   public async mounted() {
-    const res = await axios.post('http://localhost:3000/v1/operator/users', {});
+    const res = await axios.post(
+      'http://localhost:3000/v1/operator/users', {
+        // post data
+      }, {
+        headers: {
+          Authorization: `Bearer ${this.operator.token}`,
+        },
+      });
     const list: any[] = res.data.data;
     this.users = list.map((row) => {
       const message = new Message(row.message.body);

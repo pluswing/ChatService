@@ -1,5 +1,4 @@
 import * as Express from 'express';
-import { operators } from '../repositories/Operator';
 
 import * as jwt from 'jsonwebtoken';
 import * as passport from 'passport';
@@ -9,9 +8,9 @@ import {
 } from 'passport-jwt';
 import { UserDAO } from '../repositories/User';
 import { UserMessageDAO } from '../repositories/UserMessage';
+import { OperatorDAO } from '../repositories/Operator';
 
-// for TEST
-operators.create('hogehoge', 'hoge', 'fuga');
+const opRepo = new OperatorDAO();
 
 const secret = 'secret'; // FIXME
 const signOptions = {
@@ -24,8 +23,8 @@ const opts = {
     secretOrKey: secret,
     ...signOptions,
 };
-passport.use(new JwtStrategy(opts, (jwtPayload, done) => {
-    const operator = operators.find(jwtPayload.sub);
+passport.use(new JwtStrategy(opts, async (jwtPayload, done) => {
+    const operator = await opRepo.find(jwtPayload.sub);
     if (operator) {
         done(null, operator);
     } else {
@@ -42,7 +41,7 @@ app.post('/authenticate', async (req, res) => {
     const loginId = req.body.loginid;
     const password = req.body.password;
     try {
-        const operator = await operators.login(loginId, password);
+        const operator = await opRepo.login(loginId, password);
         const token = jwt.sign({ sub: operator.loginId }, secret, signOptions);
         res.json({
             token,
@@ -58,6 +57,7 @@ app.post('/authenticate', async (req, res) => {
 });
 
 // secure API
+app.use(passport.authenticate('jwt', { session: false }));
 
 app.post('/users', async (req, res) => {
     const repo = new UserDAO();
@@ -79,7 +79,5 @@ app.post('/messages', async (req, res) => {
     const messages = await mrepo.histories(id);
     return res.json({ messages });
 });
-
-app.use(passport.authenticate('jwt', { session: false }));
 
 export default app;

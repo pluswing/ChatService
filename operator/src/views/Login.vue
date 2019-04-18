@@ -32,7 +32,7 @@ export default class Login extends Vue {
 
     if (o.isLoggedIn()) {
       this.loggedIn(o);
-      this.$router.replace({ name: 'chat' });
+      this.$router.replace({ name: 'user' });
     }
   }
 }
