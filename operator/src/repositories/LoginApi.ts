@@ -1,22 +1,16 @@
 import { Operator } from '@/models/Operator';
 import { LoginRepository } from '@/repositories/LoginRepository';
-import axios from 'axios';
+import post from './api';
 
 export class LoginApi implements LoginRepository {
-    public url: string;
-
-    constructor(url: string) {
-        this.url = url;
-    }
 
     public async login(operator: Operator): Promise<Operator> {
-        const res = await axios.post(
-            `${this.url}/v1/operator/authenticate`, {
-                loginid: operator.loginId,
-                password: operator.password,
-            },
+        const data = await post('/v1/operator/authenticate', {
+            loginid: operator.loginId,
+            password: operator.password,
+        },
         );
-        operator.loggedIn(res.data.token, res.data.operator.name);
+        operator.loggedIn(data.token, data.operator.name);
         return operator;
     }
 }

@@ -3,23 +3,18 @@ import { ChatRepository } from '@/repositories/ChatRepository';
 // import request from 'request-promise';
 
 export class ChatApi implements ChatRepository {
-    public url: string;
     // for test
     private index = 0;
     private messages: Message[] = [];
 
-    constructor(url: string) {
-        this.url = url;
-    }
-
     public post(message: Message): Promise<Message> {
-/*
-        const res = await request.post(this.url + '/v1/post', {
-            message: message.message,
-        });
-        const json = JSON.parse(res.body());
-        return Message(json.id, json.message);
-*/
+        /*
+                const res = await request.post(this.url + '/v1/post', {
+                    message: message.message,
+                });
+                const json = JSON.parse(res.body());
+                return Message(json.id, json.message);
+        */
         message.id = this.index;
         this.index++;
         this.messages.push(message);
@@ -29,6 +24,6 @@ export class ChatApi implements ChatRepository {
         return new Promise((resolve, _) => resolve(this.messages));
     }
 
-//    private async api(path: string, params: {[key: string]: string}) {
-//    }
+    //    private async api(path: string, params: {[key: string]: string}) {
+    //    }
 }

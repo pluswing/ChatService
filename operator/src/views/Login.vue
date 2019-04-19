@@ -17,7 +17,7 @@ import { Operator } from '@/models/Operator';
 import { Login as LoginUsecase } from '@/usecases/Login';
 import { LoginApi } from '@/repositories/LoginApi';
 
-const loginUsecase = new LoginUsecase(new LoginApi('http://localhost:3000'));
+const loginUsecase = new LoginUsecase(new LoginApi());
 
 @Component
 export default class Login extends Vue {

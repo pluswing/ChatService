@@ -13,7 +13,7 @@ import { Message } from '@/models/Message';
 import { SendChat } from '@/usecases/SendChat';
 import { ChatApi } from '@/repositories/ChatApi';
 
-const sendChat = new SendChat(new ChatApi(''));
+const sendChat = new SendChat(new ChatApi());
 
 @Component({
   components: {

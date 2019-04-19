@@ -29,7 +29,7 @@ import UserApi from '../repositories/UserApi';
 export default class Home extends Vue {
   public users: User[] = [];
   @State('operator') public operator!: OperatorState;
-  private getusers = new GetUsers(new UserApi('http://localhost:3000'));
+  private getusers = new GetUsers(new UserApi());
 
   public async mounted() {
     this.users = await this.getusers.do(this.operator.token);
