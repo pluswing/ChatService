@@ -19,6 +19,7 @@ import axios from 'axios';
 import { State } from 'vuex-class';
 import { OperatorState } from '../store/operator';
 import GetUsers from '../usecases/GetUsers';
+import UserApi from '../repositories/UserApi';
 
 @Component({
   components: {
@@ -28,7 +29,7 @@ import GetUsers from '../usecases/GetUsers';
 export default class Home extends Vue {
   public users: User[] = [];
   @State('operator') public operator!: OperatorState;
-  private getusers = new GetUsers();
+  private getusers = new GetUsers(new UserApi('http://localhost:3000'));
 
   public async mounted() {
     this.users = await this.getusers.do(this.operator.token);
