@@ -27,6 +27,9 @@ export default class Chat extends Vue {
   private isOperatorMessage = false;
 
   public mounted() {
+
+    console.log(this.$route.params.uid);
+
     sendChat.onNewMessage = (m: Message) => {
       this.messages.push(m);
     };

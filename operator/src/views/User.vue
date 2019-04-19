@@ -1,8 +1,10 @@
 <template>
   <v-app>
     <v-content>
-      <v-layout v-for="user in users" :key="user.id">
-        <UserStatus :user="user"/>
+      <v-layout wrap>
+        <v-flex xs3 style="margin:10px;" v-for="user in users" :key="user.id">
+          <UserStatus :user="user"/>
+        </v-flex>
       </v-layout>
     </v-content>
   </v-app>
