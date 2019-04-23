@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const post = async (path: string, params: { [key: string]: any }, token?: string): Promise<any> => {
     // TODO process.env から取得。
-    const endpoint = 'http://localhost:3000';
+    const endpoint = process.env.VUE_APP_API_ENDPOINT;
     const options: { [key: string]: any } = {};
     if (token) {
         options.headers = {

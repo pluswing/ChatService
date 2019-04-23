@@ -9,8 +9,13 @@ services:
     volumes:
       - "./api:/api"
     ports:
-      - "3000:3000"
+      - "3010:3000"
     command: "npm run dev"
+    environment:
+      DB_HOST: 'mysql'
+      DB_USER: 'root'
+      DB_PASSWORD: 'root'
+      DB_NAME: 'chatservice'
   client:
     build: ./client
     working_dir: "/client"
@@ -18,7 +23,7 @@ services:
     volumes:
       - "./client:/client"
     ports:
-      - "3001:3001"
+      - "3011:3001"
     command: "sh ./run.sh"
   operator:
     build: ./operator
@@ -27,8 +32,10 @@ services:
     volumes:
       - "./operator:/operator"
     ports:
-      - "3002:3002"
+      - "3012:3002"
     command: "npm run serve"
+    environment:
+      VUE_APP_API_ENDPOINT: "http://localhost:3010"
   mysql:
     build: ./mysql
     tty: true

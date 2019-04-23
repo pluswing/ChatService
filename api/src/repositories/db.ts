@@ -5,11 +5,12 @@ let pool: Pool | null = null;
 export const getPool = (): Pool => {
     if (pool !== null) return pool;
 
+    console.log(process.env);
     pool = createPool({
-        host: 'mysql',
-        user: 'root',
-        password: 'root',
-        database: 'chatservice',
+        host: process.env.DB_HOST,
+        user: process.env.DB_USER,
+        password: process.env.DB_PASSWORD,
+        database: process.env.DB_NAME,
         waitForConnections: true,
         connectionLimit: 10,
         queueLimit: 0,
