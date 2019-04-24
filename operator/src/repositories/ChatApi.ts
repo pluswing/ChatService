@@ -1,6 +1,7 @@
 import { Message } from '@/models/Message';
 import { ChatRepository } from '@/repositories/ChatRepository';
-// import request from 'request-promise';
+import post from './api';
+import GetMessages from '@/usecases/GetMessages';
 
 export class ChatApi implements ChatRepository {
     // for test
@@ -20,8 +21,16 @@ export class ChatApi implements ChatRepository {
         this.messages.push(message);
         return new Promise((resolve, _) => resolve(message));
     }
-    public histories(): Promise<Message[]> {
-        return new Promise((resolve, _) => resolve(this.messages));
+
+    public async histories(uid: string, token: string): Promise<Message[]> {
+        const data = await post('/v1/operator/messages', { uid }, token);
+        return data.messages.map((row: any) => {
+            const m = new Message(row.body);
+            m.id = row.id;
+            m.createdAt = row.createdAt;
+            m.operatorId = row.operatorId;
+            return m;
+        });
     }
 
     //    private async api(path: string, params: {[key: string]: string}) {

@@ -74,9 +74,11 @@ app.post('/users', async (req, res) => {
 });
 
 app.post('/messages', async (req, res) => {
-    const id = req.body.id;
+    const uid = req.body.uid;
+    const urepo = new UserDAO();
+    const user = await urepo.findOrCreate(uid);
     const mrepo = new UserMessageDAO();
-    const messages = await mrepo.histories(id);
+    const messages = await mrepo.histories(user);
     return res.json({ messages });
 });
 

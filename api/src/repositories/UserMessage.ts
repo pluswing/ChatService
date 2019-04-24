@@ -17,7 +17,7 @@ export class UserMessage {
 }
 
 export interface UserMessageRepository {
-    histories(userId: number): Promise<UserMessage[]>;
+    histories(user: User): Promise<UserMessage[]>;
     add(userMessage: UserMessage): Promise<void>;
     latestMessage(user: User): Promise<UserMessage>;
 }
@@ -25,8 +25,8 @@ export interface UserMessageRepository {
 class UserMessageMemory implements UserMessageRepository {
     private messages: { [key: number]: UserMessage[] } = {};
 
-    async histories(userId: number): Promise<UserMessage[]> {
-        return this.messages[userId] || [];
+    async histories(user: User): Promise<UserMessage[]> {
+        return this.messages[user.id] || [];
     }
 
     async add(userMessage: UserMessage): Promise<void> {
@@ -36,15 +36,15 @@ class UserMessageMemory implements UserMessageRepository {
         this.messages[userMessage.userId].push(userMessage);
     }
     async latestMessage(user: User): Promise<UserMessage> {
-        const list = await this.histories(user.id);
+        const list = await this.histories(user);
         return list[list.length - 1];
     }
 }
 
 export class UserMessageDAO implements UserMessageRepository {
-    async histories(userId: number): Promise<UserMessage[]> {
+    async histories(user: User): Promise<UserMessage[]> {
         const query = 'SELECT * FROM user_messages WHERE user_id = ? ORDER BY id';
-        const rows = await select(query, [userId]);
+        const rows = await select(query, [user.id]);
         return rows.map((r) => {
             const m = new UserMessage(r.user_id, r.body);
             m.id = r.id;

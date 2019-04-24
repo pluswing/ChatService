@@ -1,6 +1,4 @@
-import Axios from 'axios';
 import { User } from '@/models/User';
-import { Message } from '@/models/Message';
 import { UserRepository } from '@/repositories/UserRepository';
 
 export default class GetUsers {

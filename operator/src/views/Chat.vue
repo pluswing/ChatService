@@ -12,6 +12,9 @@ import ChatInputForm from '@/components/ChatInputForm.vue';
 import { Message } from '@/models/Message';
 import { SendChat } from '@/usecases/SendChat';
 import { ChatApi } from '@/repositories/ChatApi';
+import { State } from 'vuex-class';
+import { OperatorState } from '../store/operator';
+import GetMessages from '@/usecases/GetMessages';
 
 const sendChat = new SendChat(new ChatApi());
 
@@ -22,13 +25,16 @@ const sendChat = new SendChat(new ChatApi());
   },
 })
 export default class Chat extends Vue {
+  @State('operator') public operator!: OperatorState;
   public messages: Message[] = [];
+  public getmessages = new GetMessages(new ChatApi());
 
   private isOperatorMessage = false;
 
-  public mounted() {
+  public async mounted() {
+    const uid = this.$route.params.uid;
 
-    console.log(this.$route.params.uid);
+    this.messages = await this.getmessages.handle(uid, this.operator.token);
 
     sendChat.onNewMessage = (m: Message) => {
       this.messages.push(m);
