@@ -29,8 +29,6 @@ export default class Chat extends Vue {
   public messages: Message[] = [];
   public getmessages = new GetMessages(new ChatApi());
 
-  private isOperatorMessage = false;
-
   public async mounted() {
     const uid = this.$route.params.uid;
 
@@ -42,11 +40,8 @@ export default class Chat extends Vue {
   }
   public async send(input: string) {
     const m = new Message(input);
-    if (this.isOperatorMessage) {
-      m.operatorId = 1;
-    }
+    m.operatorId = this.operator.id;
     await sendChat.post(m);
-    this.isOperatorMessage = !this.isOperatorMessage;
   }
 }
 </script>

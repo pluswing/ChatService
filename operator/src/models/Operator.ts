@@ -1,4 +1,5 @@
 export class Operator {
+    public id: number = 0;
     public loginId: string;
     public password: string;
     public token: string = '';
@@ -9,10 +10,11 @@ export class Operator {
         this.password = password;
     }
 
-    public loggedIn(token: string, name: string) {
-        this.password = '';
+    public loggedIn(token: string, id: number, name: string) {
         this.token = token;
+        this.id = id;
         this.name = name;
+        this.password = '';
     }
 
     public isLoggedIn(): boolean {

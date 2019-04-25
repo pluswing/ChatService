@@ -2,6 +2,7 @@ import * as Vuex from 'vuex';
 import { DefineGetters, DefineMutations, DefineActions } from 'vuex-type-helper';
 
 export interface OperatorState {
+    id: number;
     name: string;
     loginId: string;
     token: string;
@@ -13,6 +14,7 @@ export interface OperatorGetters {
 
 export interface OperatorMutations {
     loggedIn: {
+        id: number,
         name: string,
         loginId: string,
         token: string,
@@ -25,6 +27,7 @@ export interface OperatorActions {
 */
 
 const state: OperatorState = {
+    id: 0,
     name: '',
     loginId: '',
     token: '',
@@ -37,7 +40,8 @@ const getters: DefineGetters<OperatorGetters, OperatorState> = {
 };
 
 const mutations: DefineMutations<OperatorMutations, OperatorState> = {
-    loggedIn(s, { name, loginId, token }) {
+    loggedIn(s, { id, name, loginId, token }) {
+        s.id = id;
         s.name = name;
         s.loginId = loginId;
         s.token = token;

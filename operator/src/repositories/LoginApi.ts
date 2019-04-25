@@ -10,7 +10,7 @@ export class LoginApi implements LoginRepository {
             password: operator.password,
         },
         );
-        operator.loggedIn(data.token, data.operator.name);
+        operator.loggedIn(data.token, data.operator.id, data.operator.name);
         return operator;
     }
 }
