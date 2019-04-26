@@ -40,6 +40,7 @@ export const insert = async (
     const [query, params] = generateInsertStatement(tableName, data);
     const res = await getPool().execute(query, params);
     return res[0] as OkPacket;
+
 };
 
 export const generateUpdateStatement = (

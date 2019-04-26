@@ -7,7 +7,7 @@ import {
     ExtractJwt,
 } from 'passport-jwt';
 import { UserDAO } from '../repositories/User';
-import { UserMessageDAO } from '../repositories/UserMessage';
+import { UserMessageDAO, UserMessage } from '../repositories/UserMessage';
 import { OperatorDAO } from '../repositories/Operator';
 
 const opRepo = new OperatorDAO();
@@ -80,6 +80,18 @@ app.post('/messages', async (req, res) => {
     const mrepo = new UserMessageDAO();
     const messages = await mrepo.histories(user);
     return res.json({ messages });
+});
+
+app.post('/send', async (req, res) => {
+    const { uid, body, createdAt } = req.body;
+    const urepo = new UserDAO();
+    const user = await urepo.findOrCreate(uid);
+    const mrepo = new UserMessageDAO();
+    const userMessage = new UserMessage(user.id, body);
+    userMessage.createdAt = createdAt;
+    userMessage.operatorId = req.user.id;
+    const um = await mrepo.add(userMessage);
+    return res.json({ message: um });
 });
 
 export default app;

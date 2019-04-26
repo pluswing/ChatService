@@ -18,7 +18,7 @@ export class UserMessage {
 
 export interface UserMessageRepository {
     histories(user: User): Promise<UserMessage[]>;
-    add(userMessage: UserMessage): Promise<void>;
+    add(userMessage: UserMessage): Promise<UserMessage>;
     latestMessage(user: User): Promise<UserMessage>;
 }
 
@@ -29,11 +29,12 @@ class UserMessageMemory implements UserMessageRepository {
         return this.messages[user.id] || [];
     }
 
-    async add(userMessage: UserMessage): Promise<void> {
+    async add(userMessage: UserMessage): Promise<UserMessage> {
         if (!this.messages[userMessage.userId]) {
             this.messages[userMessage.userId] = [];
         }
         this.messages[userMessage.userId].push(userMessage);
+        return userMessage;
     }
     async latestMessage(user: User): Promise<UserMessage> {
         const list = await this.histories(user);
@@ -54,13 +55,15 @@ export class UserMessageDAO implements UserMessageRepository {
         });
     }
 
-    async add(userMessage: UserMessage): Promise<void> {
-        await insert('user_messages', {
+    async add(userMessage: UserMessage): Promise<UserMessage> {
+        const res = await insert('user_messages', {
             user_id: userMessage.userId,
             body: userMessage.body,
             created_at: userMessage.createdAt,
             operator_id: userMessage.operatorId,
         });
+        userMessage.id = res.insertId;
+        return userMessage;
     }
 
     async latestMessage(user: User): Promise<UserMessage> {

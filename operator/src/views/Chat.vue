@@ -40,8 +40,7 @@ export default class Chat extends Vue {
   }
   public async send(input: string) {
     const m = new Message(input);
-    m.operatorId = this.operator.id;
-    await sendChat.post(m);
+    await sendChat.post(m, this.operator.token);
   }
 }
 </script>

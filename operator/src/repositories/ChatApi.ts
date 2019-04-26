@@ -8,18 +8,14 @@ export class ChatApi implements ChatRepository {
     private index = 0;
     private messages: Message[] = [];
 
-    public post(message: Message): Promise<Message> {
-        /*
-                const res = await request.post(this.url + '/v1/post', {
-                    message: message.message,
-                });
-                const json = JSON.parse(res.body());
-                return Message(json.id, json.message);
-        */
-        message.id = this.index;
-        this.index++;
-        this.messages.push(message);
-        return new Promise((resolve, _) => resolve(message));
+    public async post(message: Message, token: string): Promise<Message> {
+        const data = await post('/v1/operator/send', message, token);
+        const row = data.message;
+        const m = new Message(row.body);
+        m.id = row.id;
+        m.createdAt = row.createdAt;
+        m.operatorId = row.operatorId;
+        return m;
     }
 
     public async histories(uid: string, token: string): Promise<Message[]> {

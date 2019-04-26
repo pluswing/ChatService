@@ -8,14 +8,10 @@ export class SendChat {
         this.repo = repo;
     }
 
-    public onNewMessage: (message: Message) => void = (m) => {};
+    public onNewMessage: (message: Message) => void = (m) => { };
 
-    public async post(message: Message) {
-        const m = await this.repo.post(message);
+    public async post(message: Message, token: string) {
+        const m = await this.repo.post(message, token);
         this.onNewMessage(m);
-    }
-
-    public async histories(): Promise<Message[]> {
-        return await this.repo.histories();
     }
 }
