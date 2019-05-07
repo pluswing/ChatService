@@ -1,8 +1,8 @@
 <template>
   <div class="header">
-      {{title}}
+    {{title}}
     <span class="right">
-        <img src="../img/close.png" @click="onClickClose"/>
+      <img src="../img/close.png" @click="onClickClose">
     </span>
   </div>
 </template>
@@ -12,31 +12,31 @@ import { Component, Prop, Emit, Vue } from 'vue-property-decorator';
 
 @Component
 export default class Header extends Vue {
-    @Prop() private title!: string;
+  @Prop() private title!: string;
 
-    @Emit() public close() {}
+  @Emit() public close() { }
 
-    public onClickClose() {
-        this.close();
-    }
+  public onClickClose() {
+    this.close();
+  }
 
 }
 </script>
 
 <style scoped lang="scss">
 .header {
-    height: 50px;
-    text-align: center;
-    background-color: #1e4784;
-    color: white;
-    line-height:50px;
-    font-size: 20px;
+  height: 50px;
+  text-align: center;
+  background-color: #1e4784;
+  color: white;
+  line-height: 50px;
+  font-size: 20px;
 }
 .right {
-    position: absolute;
-    width: 35px;
-    height: 35px;
-    right: 15px;
-    top: 8px;
+  position: absolute;
+  width: 35px;
+  height: 35px;
+  right: 15px;
+  top: 8px;
 }
 </style>

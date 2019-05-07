@@ -1,7 +1,7 @@
 <template>
   <div class="input_form">
     <div class="input_text">
-    <textarea v-model="input" rows="3" class="textarea input_text"></textarea>
+      <textarea v-model="input" rows="3" class="textarea input_text"></textarea>
     </div>
     <button class="button is-primary send" @click="onClickSend">Send</button>
   </div>
@@ -12,14 +12,14 @@ import { Component, Emit, Vue } from 'vue-property-decorator';
 
 @Component
 export default class ChatInputForm extends Vue {
-    public input: string = '';
+  public input: string = '';
 
-    @Emit() public send(input: string) {}
+  @Emit() public send(input: string) { }
 
-    public onClickSend() {
-        this.send(this.input);
-        this.input = '';
-    }
+  public onClickSend() {
+    this.send(this.input);
+    this.input = '';
+  }
 }
 </script>
 

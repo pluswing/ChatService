@@ -7,41 +7,41 @@
 </template>
 
 <script lang="ts">
-import { Component, Emit, Prop, Vue } from "vue-property-decorator";
-import Header from "./Header.vue";
-import ChatHistory from "./ChatHistory.vue";
-import ChatInputForm from "./ChatInputForm.vue";
-import { Message } from "../models/Message";
-import axios from "axios";
+import { Component, Emit, Prop, Vue } from 'vue-property-decorator';
+import Header from './Header.vue';
+import ChatHistory from './ChatHistory.vue';
+import ChatInputForm from './ChatInputForm.vue';
+import { Message } from '../models/Message';
+import axios from 'axios';
 
 @Component({
   components: {
     Header,
     ChatHistory,
-    ChatInputForm
-  }
+    ChatInputForm,
+  },
 })
 export default class Chat extends Vue {
-  @Prop() private uid!: string;
 
   public messages: Message[] = [];
+  @Prop() private uid!: string;
 
-  private connection = new WebSocket("ws://localhost:3000/v1/chat/ws/");
+  private connection = new WebSocket('ws://localhost:3010/v1/chat/ws/');
 
-  async created() {
+  public async created() {
     this.connection.onopen = () => {
       this.connection.send(
         JSON.stringify({
-          method: "register",
-          uid: this.uid
-        })
+          method: 'register',
+          uid: this.uid,
+        }),
       );
     };
 
-    this.connection.onmessage = event => {
+    this.connection.onmessage = (event) => {
       console.log(event.data);
       const data = JSON.parse(event.data);
-      if (data.method === "post") {
+      if (data.method === 'post') {
         const message = new Message(data.message);
         message.id = this.messages.length + 1;
         this.messages.push(message);
@@ -49,17 +49,17 @@ export default class Chat extends Vue {
     };
 
     // load histories
-    const res = await axios.post("http://localhost:3000/v1/chat/histories", {
-      uid: this.uid
+    const res = await axios.post('http://localhost:3010/v1/chat/histories', {
+      uid: this.uid,
     });
-    res.data.forEach(um => {
+    res.data.forEach((um: any) => {
       const mm = new Message(um.body);
       mm.id = um.id;
       this.messages.push(mm);
     });
   }
 
-  @Emit() public close() {}
+  @Emit() public close() { }
 
   public onClickClose() {
     this.close();
@@ -68,9 +68,9 @@ export default class Chat extends Vue {
   public async send(input: string) {
     this.connection.send(
       JSON.stringify({
-        method: "post",
-        message: input
-      })
+        method: 'post',
+        message: input,
+      }),
     );
   }
 }

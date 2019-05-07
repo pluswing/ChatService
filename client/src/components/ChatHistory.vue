@@ -12,17 +12,17 @@ import ChatMessage from './ChatMessage.vue';
 import { Message } from '../models/Message';
 
 @Component({
-    components: {
-        ChatMessage,
-    },
+  components: {
+    ChatMessage,
+  },
 })
 export default class ChatHistory extends Vue {
-    @Prop() private messages!: Message[];
+  @Prop() private messages!: Message[];
 }
 </script>
 
 <style scoped lang="scss">
 .messages {
-    height: 400px;
+  height: 400px;
 }
 </style>

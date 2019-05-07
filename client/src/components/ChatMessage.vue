@@ -1,7 +1,5 @@
 <template>
-  <div>
-    {{message.message}}
-  </div>
+  <div>{{message.message}}</div>
 </template>
 
 <script lang="ts">
@@ -10,7 +8,7 @@ import { Message } from '../models/Message';
 
 @Component
 export default class ChatMessage extends Vue {
-    @Prop() private message!: Message;
+  @Prop() private message!: Message;
 }
 </script>
 

@@ -14,9 +14,10 @@ const init = (target: string) => {
     }
 
     Vue.use(Buefy);
+    // tslint:disable-next-line:no-unused-expression
     new Vue({
         el: target,
-        template:`<App uid="${uid}" />`,
+        template: `<App uid="${uid}" />`,
         components: {
             App,
         },

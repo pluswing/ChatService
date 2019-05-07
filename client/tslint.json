@@ -1,7 +1,27 @@
 {
-    "extends": "tslint-config-airbnb",
+    "defaultSeverity": "warning",
+    "extends": [
+        "tslint:recommended"
+    ],
+    "linterOptions": {
+        "exclude": [
+            "node_modules/**"
+        ]
+    },
     "rules": {
-        "ter-indent": [true, 4],
-        "import-name": false
+        "quotemark": [
+            true,
+            "single"
+        ],
+        "indent": [
+            true,
+            "spaces",
+            2
+        ],
+        "interface-name": false,
+        "ordered-imports": false,
+        "object-literal-sort-keys": false,
+        "no-consecutive-blank-lines": false,
+        "no-empty": false
     }
 }

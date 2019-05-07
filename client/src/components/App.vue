@@ -11,39 +11,39 @@ import Chat from './Chat.vue';
 import Minimize from './Minimize.vue';
 
 @Component({
-    components: {
-        Chat,
-        Minimize,
-    },
+  components: {
+    Chat,
+    Minimize,
+  },
 })
 export default class App extends Vue {
-    @Prop() private uid!: string;
+  @Prop() private uid!: string;
 
-    private minimized = true;
+  private minimized = true;
 
-    public mounted() {
-        console.log(this.uid);
-    }
+  public mounted() {
+    console.log(this.uid);
+  }
 
-    show() {
-        this.minimized = false;
-    }
-    hide() {
-        this.minimized = true;
-    }
+  public show() {
+    this.minimized = false;
+  }
+  public hide() {
+    this.minimized = true;
+  }
 }
 </script>
 
 <style lang="scss">
 .pluswing_chat_service_container {
-    @import '../css/buefy.scss';
+  @import "../css/buefy.scss";
 }
 </style>
 
 <style scoped lang="scss">
 .pluswing_chat_service_container {
-    position: absolute;
-    right: 20px;
-    bottom: 0px;
+  position: absolute;
+  right: 20px;
+  bottom: 0px;
 }
 </style>

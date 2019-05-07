@@ -7,7 +7,7 @@ const app = Express();
 app.post('/histories', async (req, res) => {
     const uid = req.body.uid;
     const u = await users.findOrCreate(uid);
-    return res.json(userMessages.histories(u.id));
+    return res.json(await userMessages.histories(u));
 });
 
 export default app;
