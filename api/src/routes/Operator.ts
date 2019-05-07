@@ -88,8 +88,10 @@ app.post('/send', async (req, res) => {
     const user = await urepo.findOrCreate(uid);
     const mrepo = new UserMessageDAO();
     const userMessage = new UserMessage(user.id, body);
-    userMessage.createdAt = createdAt;
+    userMessage.createdAt = new Date(createdAt);
     userMessage.operatorId = req.user.id;
+    console.log(createdAt);
+    console.log(userMessage);
     const um = await mrepo.add(userMessage);
     return res.json({ message: um });
 });

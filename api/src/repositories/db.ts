@@ -4,8 +4,6 @@ let pool: Pool | null = null;
 
 export const getPool = (): Pool => {
     if (pool !== null) return pool;
-
-    console.log(process.env);
     pool = createPool({
         host: process.env.DB_HOST,
         user: process.env.DB_USER,

@@ -3,12 +3,13 @@ import 'moment/locale/ja';
 
 export class Message {
     public id: number = 0;
-    public message: string = '';
+    public uid: string = '';
+    public body: string = '';
     public createdAt: Date = new Date();
     public operatorId: number | null = null;
 
-    constructor(message: string) {
-        this.message = message;
+    constructor(body: string) {
+        this.body = body;
     }
 
     public date(): string {

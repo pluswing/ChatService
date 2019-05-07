@@ -4,7 +4,7 @@
     <v-flex xs8 text-xs-left v-if="!message.operatorId">
       <v-card color="blue-grey lighten-4">
         <v-card-text>
-          {{message.message}}
+          {{message.body}}
           <div class="text-xs-right">{{message.date()}}</div>
         </v-card-text>
       </v-card>
@@ -15,7 +15,7 @@
       <v-flex xs8 text-xs-right>
         <v-card color="teal lighten-3">
           <v-card-text>
-            {{message.message}}
+            {{message.body}}
             <div class="text-xs-right">{{message.date()}}</div>
           </v-card-text>
         </v-card>
@@ -61,7 +61,7 @@ import { Message } from '@/models/Message';
 
 @Component
 export default class ChatMessage extends Vue {
-  @Prop() private message!: Message;
+  @Prop() public message!: Message;
 }
 </script>
 
