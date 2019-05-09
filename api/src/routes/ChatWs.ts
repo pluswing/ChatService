@@ -2,11 +2,8 @@ import * as Express from 'express';
 import * as ExpressWs from 'express-ws';
 import * as WebSocket from 'ws';
 
-import { userMessages, UserMessage } from '../repositories/UserMessage';
-import { operators } from '../repositories/Operator';
-import { users } from '../repositories/User';
-import { responsibles } from '../repositories/Responsible';
-import { Roundrobin } from '../operators/Roundrobin';
+import { UserMessage, UserMessageDAO } from '../repositories/UserMessage';
+import { UserDAO } from '../repositories/User';
 
 const bind = (path: string, originalApp: Express.Application) => {
 
@@ -27,6 +24,9 @@ const bind = (path: string, originalApp: Express.Application) => {
     // {method: 'register', uid: 'xxxxxxxxx'}
     // {method: 'post', to: 'xxxxxxx', body: '......'}
 
+    const userDao = new UserDAO();
+    const userMessageDao = new UserMessageDAO();
+
     app.ws(path, (ws, req) => {
         ws.on('message', async (msg) => {
             console.log(msg);
@@ -35,23 +35,18 @@ const bind = (path: string, originalApp: Express.Application) => {
 
             if (m.method === 'register') {
                 // 登録処理
-                const u = await users.findOrCreate(m.uid);
+                const u = await userDao.findOrCreate(m.uid);
                 sockets[u.id] = ws;
                 ws.send(msg);
             }
 
             if (m.method === 'post') {
-                // FIXME FIRST_RESPONDER
-                // FOR TEST
-                const r = new Roundrobin(operators, responsibles);
-                const u = await users.findOrCreate(m.to);
+                const u = await userDao.findOrCreate(m.uid);
                 const um = new UserMessage(u.id, m.message);
-                userMessages.add(um);
-                r.onMessage(u, um);
-
-                // const u = users.findOrCreate(m.to);
-                // userMessages.add(new UserMessage(u.id, m.message));
-                // sockets[u.id].send(msg);
+                console.log(um);
+                await userMessageDao.add(um);
+                // TEST
+                sockets[u.id].send(um);
             }
         });
     });

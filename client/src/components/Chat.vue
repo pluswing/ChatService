@@ -70,6 +70,7 @@ export default class Chat extends Vue {
       JSON.stringify({
         method: 'post',
         message: input,
+        uid: this.uid,
       }),
     );
   }
