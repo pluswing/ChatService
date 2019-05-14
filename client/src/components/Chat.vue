@@ -43,7 +43,8 @@ export default class Chat extends Vue {
       const data = JSON.parse(event.data);
       if (data.method === 'post') {
         const message = new Message(data.message);
-        message.id = this.messages.length + 1;
+        message.id = data.id;
+        message.operatorId = data.operatorId;
         this.messages.push(message);
       }
     };

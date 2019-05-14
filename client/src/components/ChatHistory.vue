@@ -1,5 +1,5 @@
 <template>
-  <div class="messages">
+  <div class="messages" style="overflow-y:scroll;">
     <div v-for="message in messages" :key="message.id">
       <ChatMessage :message="message"/>
     </div>

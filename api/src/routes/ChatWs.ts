@@ -45,8 +45,12 @@ const bind = (path: string, originalApp: Express.Application) => {
                 const um = new UserMessage(u.id, m.message);
                 console.log(um);
                 await userMessageDao.add(um);
-                // TEST
-                sockets[u.id].send(um);
+                sockets[u.id].send(JSON.stringify({
+                    method: 'post',
+                    message: m.message,
+                    id: um.id,
+                    operatorId: null,
+                }));
             }
         });
     });
