@@ -56,6 +56,7 @@ export default class Chat extends Vue {
     res.data.forEach((um: any) => {
       const mm = new Message(um.body);
       mm.id = um.id;
+      mm.operatorId = um.operatorId;
       this.messages.push(mm);
     });
   }

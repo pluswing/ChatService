@@ -20,6 +20,7 @@ const bind = (path: string, originalApp: Express.Application) => {
     });
 
     const sockets: { [key: number]: WebSocket } = {};
+    const operatorSockets: { [key: number]: WebSocket } = {};
 
     // {method: 'register', uid: 'xxxxxxxxx'}
     // {method: 'post', to: 'xxxxxxx', body: '......'}
@@ -35,8 +36,12 @@ const bind = (path: string, originalApp: Express.Application) => {
 
             if (m.method === 'register') {
                 // 登録処理
-                const u = await userDao.findOrCreate(m.uid);
-                sockets[u.id] = ws;
+                if (m.isOperator) {
+                    operatorSockets[m.id] = ws;
+                } else {
+                    const u = await userDao.findOrCreate(m.uid);
+                    sockets[u.id] = ws;
+                }
                 ws.send(msg);
             }
 
@@ -45,12 +50,17 @@ const bind = (path: string, originalApp: Express.Application) => {
                 const um = new UserMessage(u.id, m.message);
                 console.log(um);
                 await userMessageDao.add(um);
-                sockets[u.id].send(JSON.stringify({
+                const resp = JSON.stringify({
                     method: 'post',
                     message: m.message,
                     id: um.id,
                     operatorId: null,
-                }));
+                });
+                sockets[u.id].send(resp);
+                // broadcast operators
+                Object.keys(operatorSockets).forEach((id) => {
+                    operatorSockets[parseInt(id, 10)].send(resp);
+                });
             }
         });
     });

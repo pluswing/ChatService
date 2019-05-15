@@ -1,13 +1,13 @@
 <template>
   <div style="margin:5px;">
     <div v-if="!message.isOperatorMessage()" style="margin-left:50px;">
-      <b-notification :closable="false">
+      <b-notification type="is-info" :closable="false">
         <div style="text-align:right; white-space:pre;">{{message.message}}</div>
       </b-notification>
     </div>
 
     <div v-if="message.isOperatorMessage()" style="margin-right:50px;">
-      <b-notification type="is-info" :closable="false">
+      <b-notification :closable="false">
         <div style="white-space:pre;">{{message.message}}</div>
       </b-notification>
     </div>

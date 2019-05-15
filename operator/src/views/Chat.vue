@@ -29,6 +29,33 @@ export default class Chat extends Vue {
   public messages: Message[] = [];
   public getmessages = new GetMessages(new ChatApi());
 
+  private connection = new WebSocket('ws://localhost:3010/v1/chat/ws/');
+
+  public async created() {
+    this.connection.onopen = () => {
+      this.connection.send(
+        JSON.stringify({
+          method: 'register',
+          isOperator: true,
+          id: this.operator.id,
+        }),
+      );
+    };
+
+    this.connection.onmessage = (event) => {
+      console.log(event.data);
+      const data = JSON.parse(event.data);
+      if (data.method === 'post') {
+        const m = new Message(data.message);
+        m.id = data.id;
+        m.operatorId = data.operatorId;
+        // FIXME
+        // m.createdAt = ??
+        this.messages.push(m);
+      }
+    };
+  }
+
   public async mounted() {
     const uid = this.$route.params.uid;
 
