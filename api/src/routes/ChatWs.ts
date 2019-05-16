@@ -1,6 +1,6 @@
 import * as Express from 'express';
 import * as ExpressWs from 'express-ws';
-import * as WebSocket from 'ws';
+import sockets from '../websocket/sockets';
 
 import { UserMessage, UserMessageDAO } from '../repositories/UserMessage';
 import { UserDAO } from '../repositories/User';
@@ -19,9 +19,6 @@ const bind = (path: string, originalApp: Express.Application) => {
         ws.ping();
     });
 
-    const sockets: { [key: number]: WebSocket } = {};
-    const operatorSockets: { [key: number]: WebSocket } = {};
-
     // {method: 'register', uid: 'xxxxxxxxx'}
     // {method: 'post', to: 'xxxxxxx', body: '......'}
 
@@ -37,10 +34,10 @@ const bind = (path: string, originalApp: Express.Application) => {
             if (m.method === 'register') {
                 // 登録処理
                 if (m.isOperator) {
-                    operatorSockets[m.id] = ws;
+                    sockets.addOperatorSocket(m.id, ws);
                 } else {
                     const u = await userDao.findOrCreate(m.uid);
-                    sockets[u.id] = ws;
+                    sockets.addUserSocket(u, ws);
                 }
                 ws.send(msg);
             }
@@ -56,11 +53,8 @@ const bind = (path: string, originalApp: Express.Application) => {
                     id: um.id,
                     operatorId: null,
                 });
-                sockets[u.id].send(resp);
-                // broadcast operators
-                Object.keys(operatorSockets).forEach((id) => {
-                    operatorSockets[parseInt(id, 10)].send(resp);
-                });
+                sockets.sendUser(u, resp);
+                sockets.broadcastOperators(resp);
             }
         });
     });

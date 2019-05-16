@@ -9,6 +9,7 @@ import {
 import { UserDAO } from '../repositories/User';
 import { UserMessageDAO, UserMessage } from '../repositories/UserMessage';
 import { OperatorDAO } from '../repositories/Operator';
+import sockets from '../websocket/sockets';
 
 const opRepo = new OperatorDAO();
 
@@ -93,6 +94,13 @@ app.post('/send', async (req, res) => {
     console.log(createdAt);
     console.log(userMessage);
     const um = await mrepo.add(userMessage);
+    const resp = JSON.stringify({
+        method: 'post',
+        message: um.body,
+        id: um.id,
+        operatorId: um.operatorId,
+    });
+    sockets.sendUser(user, resp);
     return res.json({ message: um });
 });
 
