@@ -66,6 +66,17 @@ export default class Chat extends Vue {
       this.messages.push(m);
     };
   }
+
+  public async beforeDestroy() {
+    this.connection.send(
+      JSON.stringify({
+        method: 'disconnect',
+        isOperator: true,
+        id: this.operator.id,
+      }),
+    );
+  }
+
   public async send(input: string) {
     const m = new Message(input);
     m.uid = this.$route.params.uid;

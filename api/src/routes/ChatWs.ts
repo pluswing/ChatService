@@ -43,8 +43,12 @@ const bind = (path: string, originalApp: Express.Application) => {
             }
 
             if (m.method === 'disconnect') {
-                const u = await userDao.findOrCreate(m.uid);
-                sockets.removeUserSocket(u);
+                if (m.isOperator) {
+                    sockets.removeOperatorSocket(m.id);
+                } else {
+                    const u = await userDao.findOrCreate(m.uid);
+                    sockets.removeUserSocket(u);
+                }
             }
 
             if (m.method === 'post') {

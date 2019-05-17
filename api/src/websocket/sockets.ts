@@ -17,15 +17,30 @@ class Sockets {
         this.operatorSockets[id] = ws;
     }
 
+    removeOperatorSocket(id: number) {
+        delete this.operatorSockets[id];
+    }
+
     sendUser(u: User, resp: string) {
         if (u.id in this.sockets) {
-            this.sockets[u.id].send(resp);
+            const socket = this.sockets[u.id];
+            if (socket.readyState === WebSocket.OPEN) {
+                socket.send(resp);
+            } else {
+                this.removeUserSocket(u);
+            }
         }
     }
 
     broadcastOperators(resp: string) {
         Object.keys(this.operatorSockets).forEach((id) => {
-            this.operatorSockets[parseInt(id, 10)].send(resp);
+            const operatorId = parseInt(id, 10);
+            const socket = this.operatorSockets[operatorId];
+            if (socket.readyState === WebSocket.OPEN) {
+                socket.send(resp);
+            } else {
+                this.removeOperatorSocket(operatorId);
+            }
         });
     }
 }
