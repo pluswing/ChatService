@@ -1,5 +1,6 @@
 import * as WebSocket from 'ws';
 import { User } from '../repositories/User';
+import { Operator } from '../repositories/Operator';
 
 class Sockets {
     private sockets: { [key: number]: WebSocket } = {};
@@ -13,12 +14,12 @@ class Sockets {
         delete this.sockets[u.id];
     }
 
-    addOperatorSocket(id: number, ws: WebSocket) {
-        this.operatorSockets[id] = ws;
+    addOperatorSocket(operator: Operator, ws: WebSocket) {
+        this.operatorSockets[operator.id] = ws;
     }
 
-    removeOperatorSocket(id: number) {
-        delete this.operatorSockets[id];
+    removeOperatorSocket(operator: Operator) {
+        delete this.operatorSockets[operator.id];
     }
 
     sendUser(u: User, resp: string) {
@@ -39,7 +40,8 @@ class Sockets {
             if (socket.readyState === WebSocket.OPEN) {
                 socket.send(resp);
             } else {
-                this.removeOperatorSocket(operatorId);
+                // TODO ...
+                delete this.operatorSockets[operatorId];
             }
         });
     }

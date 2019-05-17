@@ -37,7 +37,7 @@ export default class Chat extends Vue {
         JSON.stringify({
           method: 'register',
           isOperator: true,
-          id: this.operator.id,
+          token: this.operator.token,
         }),
       );
     };
@@ -72,7 +72,7 @@ export default class Chat extends Vue {
       JSON.stringify({
         method: 'disconnect',
         isOperator: true,
-        id: this.operator.id,
+        token: this.operator.token,
       }),
     );
   }

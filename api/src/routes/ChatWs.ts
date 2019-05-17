@@ -4,6 +4,8 @@ import sockets from '../websocket/sockets';
 
 import { UserMessage, UserMessageDAO } from '../repositories/UserMessage';
 import { UserDAO } from '../repositories/User';
+import * as jwt from 'jsonwebtoken';
+import { OperatorDAO } from '../repositories/Operator';
 
 const bind = (path: string, originalApp: Express.Application) => {
 
@@ -24,6 +26,7 @@ const bind = (path: string, originalApp: Express.Application) => {
 
     const userDao = new UserDAO();
     const userMessageDao = new UserMessageDAO();
+    const operatorDao = new OperatorDAO();
 
     app.ws(path, (ws, req) => {
         ws.on('message', async (msg) => {
@@ -34,7 +37,11 @@ const bind = (path: string, originalApp: Express.Application) => {
             if (m.method === 'register') {
                 // 登録処理
                 if (m.isOperator) {
-                    sockets.addOperatorSocket(m.id, ws);
+                    const decoded: any = jwt.verify(m.token, 'secret');
+                    const operator = await operatorDao.find(decoded.sub);
+                    if (operator != null) {
+                        sockets.addOperatorSocket(operator, ws);
+                    }
                 } else {
                     const u = await userDao.findOrCreate(m.uid);
                     sockets.addUserSocket(u, ws);
@@ -44,7 +51,11 @@ const bind = (path: string, originalApp: Express.Application) => {
 
             if (m.method === 'disconnect') {
                 if (m.isOperator) {
-                    sockets.removeOperatorSocket(m.id);
+                    const decoded: any = jwt.verify(m.token, 'secret');
+                    const operator = await operatorDao.find(decoded.sub);
+                    if (operator != null) {
+                        sockets.removeOperatorSocket(operator);
+                    }
                 } else {
                     const u = await userDao.findOrCreate(m.uid);
                     sockets.removeUserSocket(u);
