@@ -99,6 +99,7 @@ app.post('/send', async (req, res) => {
         message: um.body,
         id: um.id,
         operatorId: um.operatorId,
+        createdAt: um.createdAt,
     });
     sockets.sendUser(user, resp);
     return res.json({ message: um });

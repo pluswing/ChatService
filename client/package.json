@@ -12,7 +12,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.16.3"
+    "express": "^4.16.3",
+    "moment": "^2.24.0"
   },
   "devDependencies": {
     "@types/axios": "^0.14.0",

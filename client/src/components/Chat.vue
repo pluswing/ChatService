@@ -45,6 +45,7 @@ export default class Chat extends Vue {
         const message = new Message(data.message);
         message.id = data.id;
         message.operatorId = data.operatorId;
+        message.createdAt = data.createdAt;
         this.messages.push(message);
       }
     };
@@ -57,6 +58,8 @@ export default class Chat extends Vue {
       const mm = new Message(um.body);
       mm.id = um.id;
       mm.operatorId = um.operatorId;
+      console.log(um);
+      mm.createdAt = new Date(um.createdAt);
       this.messages.push(mm);
     });
   }
