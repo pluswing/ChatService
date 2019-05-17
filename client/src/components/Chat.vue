@@ -64,6 +64,15 @@ export default class Chat extends Vue {
     });
   }
 
+  public beforeDestroy() {
+    this.connection.send(
+      JSON.stringify({
+        method: 'disconnect',
+        uid: this.uid,
+      }),
+    );
+  }
+
   @Emit() public close() { }
 
   public onClickClose() {

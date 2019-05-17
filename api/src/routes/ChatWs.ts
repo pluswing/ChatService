@@ -42,6 +42,11 @@ const bind = (path: string, originalApp: Express.Application) => {
                 ws.send(msg);
             }
 
+            if (m.method === 'disconnect') {
+                const u = await userDao.findOrCreate(m.uid);
+                sockets.removeUserSocket(u);
+            }
+
             if (m.method === 'post') {
                 const u = await userDao.findOrCreate(m.uid);
                 const um = new UserMessage(u.id, m.message);

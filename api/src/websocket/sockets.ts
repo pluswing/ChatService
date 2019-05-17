@@ -9,12 +9,18 @@ class Sockets {
         this.sockets[u.id] = ws;
     }
 
+    removeUserSocket(u: User) {
+        delete this.sockets[u.id];
+    }
+
     addOperatorSocket(id: number, ws: WebSocket) {
         this.operatorSockets[id] = ws;
     }
 
     sendUser(u: User, resp: string) {
-        this.sockets[u.id].send(resp);
+        if (u.id in this.sockets) {
+            this.sockets[u.id].send(resp);
+        }
     }
 
     broadcastOperators(resp: string) {
