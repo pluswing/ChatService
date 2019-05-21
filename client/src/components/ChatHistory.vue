@@ -18,6 +18,13 @@ import { Message } from '../models/Message';
 })
 export default class ChatHistory extends Vue {
   @Prop() private messages!: Message[];
+
+  public updated() {
+    this.$nextTick(() => {
+      const container = document.getElementsByClassName('messages')[0];
+      container.scrollTop = container.scrollHeight;
+    });
+  }
 }
 </script>
 

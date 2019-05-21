@@ -50,8 +50,6 @@ export default class Chat extends Vue {
         m.id = data.id;
         m.operatorId = data.operatorId;
         m.createdAt = new Date(data.createdAt);
-        // FIXME
-        // m.createdAt = ??
         this.messages.push(m);
       }
     };

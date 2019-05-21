@@ -19,7 +19,11 @@ class Sockets {
     }
 
     removeOperatorSocket(operator: Operator) {
-        delete this.operatorSockets[operator.id];
+        this.removeOperatorSocketById(operator.id);
+    }
+
+    private removeOperatorSocketById(operatorId: number) {
+        delete this.operatorSockets[operatorId];
     }
 
     sendUser(u: User, resp: string) {
@@ -40,8 +44,7 @@ class Sockets {
             if (socket.readyState === WebSocket.OPEN) {
                 socket.send(resp);
             } else {
-                // TODO ...
-                delete this.operatorSockets[operatorId];
+                this.removeOperatorSocketById(operatorId);
             }
         });
     }
