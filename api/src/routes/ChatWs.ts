@@ -73,6 +73,7 @@ const bind = (path: string, originalApp: Express.Application) => {
                     id: um.id,
                     operatorId: null,
                     createdAt: um.createdAt,
+                    uid: u.uid,
                 });
                 sockets.sendUser(u, resp);
                 sockets.broadcastOperators(resp);

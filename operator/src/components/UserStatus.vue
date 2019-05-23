@@ -1,5 +1,11 @@
 <template>
-  <v-card class="mx-auto" color="#26c6da" dark max-width="400">
+  <v-card
+    class="mx-auto"
+    color="#26c6da"
+    :style="{'background-color': gbColor }"
+    dark
+    max-width="400"
+  >
     <v-card-title>
       <span class="title font-weight-light">{{ user.uid }}</span>
     </v-card-title>
@@ -27,6 +33,10 @@ import { User } from '@/models/User';
 })
 export default class UserStatus extends Vue {
   @Prop() private user!: User;
+
+  get gbColor(): string {
+    return this.user.arrival == 0 ? '#26c6da' : 'red';
+  }
 }
 </script>
 

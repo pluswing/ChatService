@@ -30,9 +30,34 @@ export default class Home extends Vue {
   public users: User[] = [];
   @State('operator') public operator!: OperatorState;
   private getusers = new GetUsers(new UserApi());
+  private connection = new WebSocket('ws://localhost:3010/v1/chat/ws/');
 
   public async mounted() {
     this.users = await this.getusers.do(this.operator.token);
+  }
+
+  public async created() {
+    this.connection.onopen = () => {
+      this.connection.send(
+        JSON.stringify({
+          method: 'register',
+          isOperator: true,
+          token: this.operator.token,
+        }),
+      );
+    };
+
+    this.connection.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      if (data.method === 'post') {
+        console.log(this.users);
+        console.log(data);
+        const uid = data.uid;
+        const user = this.users.find((u) => u.uid === uid);
+        if (!user) { return; }
+        Vue.set(user, 'arrival', user.arrival + 1);
+      }
+    };
   }
 }
 </script>
