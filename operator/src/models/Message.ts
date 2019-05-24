@@ -13,7 +13,9 @@ export class Message {
     }
 
     public date(): string {
-        // return moment(this.createdAt).fromNow();
         return moment(this.createdAt).format('YYYY/MM/DD HH:mm:ss');
+    }
+    public fromNow(): string {
+        return moment(this.createdAt).fromNow();
     }
 }
