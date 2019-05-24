@@ -28,6 +28,7 @@ import { State } from 'vuex-class';
 import { OperatorState } from '../store/operator';
 import GetUsers from '../usecases/GetUsers';
 import UserApi from '../repositories/UserApi';
+import socket from '../socket/socket';
 
 @Component({
   components: {
@@ -41,45 +42,30 @@ export default class Home extends Vue {
   public messages: Message[] = [];
 
   private getusers = new GetUsers(new UserApi());
-  private connection = new WebSocket('ws://localhost:3010/v1/chat/ws/');
 
   public async mounted() {
     this.users = await this.getusers.do(this.operator.token);
-    const m = new Message('hogehogehogehoge');
-    m.uid = 'uiduid';
-    this.messages = [
-      m,
-    ];
   }
 
   public async created() {
-    this.connection.onopen = () => {
-      this.connection.send(
-        JSON.stringify({
-          method: 'register',
-          isOperator: true,
-          token: this.operator.token,
-        }),
-      );
-    };
+    socket.connect(this.operator.token, () => {
+      socket.setOnMessage((event) => {
+        const data = JSON.parse(event.data);
+        if (data.method === 'post') {
+          const m = new Message(data.message);
+          m.id = data.id;
+          m.uid = data.uid;
+          m.operatorId = data.operatorId;
+          m.createdAt = new Date(data.createdAt);
+          this.messages.unshift(m);
 
-    this.connection.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      if (data.method === 'post') {
-
-        const m = new Message(data.message);
-        m.id = data.id;
-        m.uid = data.uid;
-        m.operatorId = data.operatorId;
-        m.createdAt = new Date(data.createdAt);
-        this.messages.unshift(m);
-
-        const uid = data.uid;
-        const user = this.users.find((u) => u.uid === uid);
-        if (!user) { return; }
-        Vue.set(user, 'arrival', user.arrival + 1);
-      }
-    };
+          const uid = data.uid;
+          const user = this.users.find((u) => u.uid === uid);
+          if (!user) { return; }
+          Vue.set(user, 'arrival', user.arrival + 1);
+        }
+      });
+    });
   }
 }
 </script>
