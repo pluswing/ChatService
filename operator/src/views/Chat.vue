@@ -7,8 +7,8 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import ChatHistory from '@/components/ChatHistory.vue';
-import ChatInputForm from '@/components/ChatInputForm.vue';
+import ChatHistory from '@/components/chat/ChatHistory.vue';
+import ChatInputForm from '@/components/chat/ChatInputForm.vue';
 import { Message } from '@/models/Message';
 import { SendChat } from '@/usecases/SendChat';
 import { ChatApi } from '@/repositories/ChatApi';

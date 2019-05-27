@@ -9,7 +9,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import ChatMessage from '@/components/ChatMessage.vue';
+import ChatMessage from '@/components/chat/ChatMessage.vue';
 import { Message } from '@/models/Message';
 
 @Component({

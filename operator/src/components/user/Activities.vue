@@ -17,7 +17,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import { Message } from '../models/Message';
+import { Message } from '@/models/Message';
 @Component({
   components: {
   },

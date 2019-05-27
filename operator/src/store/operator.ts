@@ -1,5 +1,4 @@
-import * as Vuex from 'vuex';
-import { DefineGetters, DefineMutations, DefineActions } from 'vuex-type-helper';
+import { DefineGetters, DefineMutations } from 'vuex-type-helper';
 
 export interface OperatorState {
     id: number;

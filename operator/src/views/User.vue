@@ -19,8 +19,8 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import UserStatus from '@/components/UserStatus.vue';
-import Activities from '@/components/Activities.vue';
+import UserStatus from '@/components/user/UserStatus.vue';
+import Activities from '@/components/user/Activities.vue';
 import { Message } from '../models/Message';
 import { User } from '../models/User';
 import axios from 'axios';

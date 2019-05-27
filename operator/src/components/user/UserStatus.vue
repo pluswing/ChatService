@@ -5,7 +5,9 @@
     </template>
     <v-card class="mx-auto" color="#26c6da" dark max-width="400">
       <v-card-title>
-        <span class="title font-weight-light">{{ user.uid }}</span>
+        <span class="title font-weight-light">
+          <router-link :to="{ name: 'chat', params: { uid: user.uid }}">{{ user.uid }}</router-link>
+        </span>
       </v-card-title>
 
       <v-card-text class="headline font-weight-bold">
