@@ -10,8 +10,8 @@
         </span>
       </v-card-title>
 
-      <v-card-text class="headline font-weight-bold">
-        <router-link :to="{ name: 'chat', params: { uid: user.uid }}">{{ user.message.message }}</router-link>
+      <v-card-text class="headline">
+        <router-link :to="{ name: 'chat', params: { uid: user.uid }}">{{ user.message.body }}</router-link>
       </v-card-text>
 
       <v-card-actions>

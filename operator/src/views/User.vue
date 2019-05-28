@@ -38,6 +38,8 @@ import socket from '../socket/socket';
 })
 export default class Home extends Vue {
   @State('operator') public operator!: OperatorState;
+  // @State('users') public users!: UsersState;
+  // @Mutation('users/add') public add;
   public users: User[] = [];
   public messages: Message[] = [];
 
