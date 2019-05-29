@@ -35,6 +35,10 @@ import { User } from '@/models/User';
 export default class UserStatus extends Vue {
   @Prop() private user!: User;
 
+  public mounted() {
+    console.log(this.user.message);
+  }
+
   get showBadge(): boolean {
     return this.user.arrival > 0;
   }

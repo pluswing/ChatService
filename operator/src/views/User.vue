@@ -24,11 +24,12 @@ import Activities from '@/components/user/Activities.vue';
 import { Message } from '../models/Message';
 import { User } from '../models/User';
 import axios from 'axios';
-import { State } from 'vuex-class';
+import { State, Mutation, Getter } from 'vuex-class';
 import { OperatorState } from '../store/operator';
 import GetUsers from '../usecases/GetUsers';
 import UserApi from '../repositories/UserApi';
 import socket from '../socket/socket';
+import { UsersState } from '../store/users';
 
 @Component({
   components: {
@@ -38,15 +39,20 @@ import socket from '../socket/socket';
 })
 export default class Home extends Vue {
   @State('operator') public operator!: OperatorState;
-  // @State('users') public users!: UsersState;
-  // @Mutation('users/add') public add;
-  public users: User[] = [];
+  @Mutation('users/add') public add!: (payload: any) => void;
+  @Mutation('users/clear') public clear!: (payload: any) => void;
+  @Getter('users/users') public users!: User[];
+  // public users: User[] = [];
   public messages: Message[] = [];
 
   private getusers = new GetUsers(new UserApi());
 
   public async mounted() {
-    this.users = await this.getusers.do(this.operator.token);
+    const users = await this.getusers.do(this.operator.token);
+    this.clear({});
+    users.forEach((user) => {
+      this.add({ user });
+    });
   }
 
   public async created() {
@@ -61,10 +67,8 @@ export default class Home extends Vue {
           m.createdAt = new Date(data.createdAt);
           this.messages.unshift(m);
 
-          const uid = data.uid;
-          const user = this.users.find((u) => u.uid === uid);
-          if (!user) { return; }
-          Vue.set(user, 'arrival', user.arrival + 1);
+          const user = new User(data.userId, data.uid, m);
+          this.add({ user });
         }
       });
     });
