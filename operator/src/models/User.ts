@@ -1,6 +1,21 @@
 import { Message } from './Message';
+import { users } from '@/store/users';
 
-export class User {
+export interface IUser {
+    id: number;
+    uid: string;
+    message: Message;
+    arrival: number;
+}
+
+export class User implements IUser {
+
+    public static from(o: IUser): User {
+        const u = new User(o.id, o.uid, Message.from(o.message));
+        u.arrival = o.arrival;
+        return u;
+    }
+
     public id: number = 0;
     public uid: string = '';
     public message: Message;

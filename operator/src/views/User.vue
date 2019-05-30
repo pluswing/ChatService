@@ -22,7 +22,7 @@ import { Component, Vue } from 'vue-property-decorator';
 import UserStatus from '@/components/user/UserStatus.vue';
 import Activities from '@/components/user/Activities.vue';
 import { Message } from '../models/Message';
-import { User } from '../models/User';
+import { User, IUser } from '../models/User';
 import axios from 'axios';
 import { State, Mutation, Getter } from 'vuex-class';
 import { OperatorState } from '../store/operator';
@@ -39,10 +39,9 @@ import { UsersState } from '../store/users';
 })
 export default class Home extends Vue {
   @State('operator') public operator!: OperatorState;
-  @Mutation('users/add') public add!: (payload: any) => void;
+  @Mutation('users/add') public add!: (payload: { user: IUser }) => void;
   @Mutation('users/clear') public clear!: (payload: any) => void;
   @Getter('users/users') public users!: User[];
-  // public users: User[] = [];
   public messages: Message[] = [];
 
   private getusers = new GetUsers(new UserApi());
@@ -68,6 +67,7 @@ export default class Home extends Vue {
           this.messages.unshift(m);
 
           const user = new User(data.userId, data.uid, m);
+          user.arrival = 1;
           this.add({ user });
         }
       });

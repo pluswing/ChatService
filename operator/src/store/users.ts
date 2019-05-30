@@ -1,19 +1,19 @@
-import { User } from '@/models/User';
+import { IUser, User } from '@/models/User';
 import { DefineMutations, DefineGetters } from 'vuex-type-helper';
 import { Message } from '@/models/Message';
 
 export interface UsersState {
-    users: User[];
+    users: IUser[];
 }
 
 
 export interface UsersGetters {
-    users: User[];
+    users: IUser[];
 }
 
 export interface UsersMutations {
     add: {
-        user: User,
+        user: IUser,
     };
     clear: {};
 }
@@ -30,14 +30,7 @@ const state: UsersState = {
 
 const getters: DefineGetters<UsersGetters, UsersState> = {
     users(s): User[] {
-        return s.users.map((u) => {
-            const m = new Message(u.message.body);
-            m.id = u.message.id;
-            m.uid = u.uid;
-            m.operatorId = u.message.operatorId;
-            m.createdAt = u.message.createdAt;
-            return new User(u.id, u.uid, m);
-        });
+        return s.users.map((u) => User.from(u));
     },
 };
 
@@ -47,8 +40,9 @@ const mutations: DefineMutations<UsersMutations, UsersState> = {
         if (already) {
             // すでにいる場合
             already.message = user.message;
+            already.arrival = already.arrival + 1;
         } else {
-            // いな場合は、追加する
+            // いない場合は、追加する
             s.users.push(user);
         }
     },
