@@ -1,28 +1,29 @@
 <template>
-  <v-badge v-model="showBadge" color="red" right overlap>
-    <template v-slot:badge>
-      <span>{{ user.arrival }}</span>
-    </template>
-    <v-card class="mx-auto">
+  <v-card>
+    <v-badge v-model="showBadge" color="red" right overlap>
+      <template v-slot:badge>
+        <span>{{ user.badge }}</span>
+      </template>
+
       <v-card-title>
         <span class="title font-weight-light">
           <router-link :to="{ name: 'chat', params: { uid: user.uid }}">{{ user.uid }}</router-link>
         </span>
       </v-card-title>
+    </v-badge>
 
-      <v-card-text class="headline">
-        <router-link :to="{ name: 'chat', params: { uid: user.uid }}">{{ user.message.body }}</router-link>
-      </v-card-text>
+    <v-card-text class="headline">
+      <router-link :to="{ name: 'chat', params: { uid: user.uid }}">{{ user.message.body }}</router-link>
+    </v-card-text>
 
-      <v-card-actions>
-        <v-list-tile class="grow">
-          <v-layout align-center justify-end>
-            <span class="subheading">{{ user.message.date() }}</span>
-          </v-layout>
-        </v-list-tile>
-      </v-card-actions>
-    </v-card>
-  </v-badge>
+    <v-card-actions>
+      <v-list-tile class="grow">
+        <v-layout align-center justify-end>
+          <span class="subheading">{{ user.message.date() }}</span>
+        </v-layout>
+      </v-list-tile>
+    </v-card-actions>
+  </v-card>
 </template>
 
 <script lang="ts">
@@ -40,7 +41,7 @@ export default class UserStatus extends Vue {
   }
 
   get showBadge(): boolean {
-    return this.user.arrival > 0;
+    return this.user.badge > 0;
   }
 }
 </script>

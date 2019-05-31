@@ -1,6 +1,5 @@
 import { IUser, User } from '@/models/User';
 import { DefineMutations, DefineGetters } from 'vuex-type-helper';
-import { Message } from '@/models/Message';
 
 export interface UsersState {
     users: IUser[];
@@ -40,7 +39,7 @@ const mutations: DefineMutations<UsersMutations, UsersState> = {
         if (already) {
             // すでにいる場合
             already.message = user.message;
-            already.arrival = already.arrival + 1;
+            already.badge = already.badge + 1;
         } else {
             // いない場合は、追加する
             s.users.push(user);

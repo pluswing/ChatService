@@ -21,7 +21,7 @@
 import { Component, Vue } from 'vue-property-decorator';
 import UserStatus from '@/components/user/UserStatus.vue';
 import Activities from '@/components/user/Activities.vue';
-import { Message } from '../models/Message';
+import { Message, IMessage } from '../models/Message';
 import { User, IUser } from '../models/User';
 import axios from 'axios';
 import { State, Mutation, Getter } from 'vuex-class';
@@ -39,18 +39,25 @@ import { UsersState } from '../store/users';
 })
 export default class Home extends Vue {
   @State('operator') public operator!: OperatorState;
-  @Mutation('users/add') public add!: (payload: { user: IUser }) => void;
-  @Mutation('users/clear') public clear!: (payload: any) => void;
+
+  @Mutation('users/add') public addUser!: (payload: { user: IUser }) => void;
+  @Mutation('users/clear') public clearUser!: () => void;
   @Getter('users/users') public users!: User[];
-  public messages: Message[] = [];
+
+  @Mutation('messages/add') public addMessage!: (payload: { message: IMessage }) => void;
+  @Mutation('messages/clear') public clearMessage!: () => void;
+  @Getter('messages/messages') public messages!: Message[];
 
   private getusers = new GetUsers(new UserApi());
 
   public async mounted() {
     const users = await this.getusers.do(this.operator.token);
-    this.clear({});
+    // TODO あとで消す。
+    this.clearUser();
+    this.clearMessage();
+
     users.forEach((user) => {
-      this.add({ user });
+      this.addUser({ user });
     });
   }
 
@@ -59,12 +66,12 @@ export default class Home extends Vue {
       socket.setOnMessage((event) => {
         const data = JSON.parse(event.data);
         if (data.method === 'post') {
-          const m = Message.from(data);
-          this.messages.unshift(m);
+          const message = Message.from(data);
+          this.addMessage({ message });
 
-          const user = new User(data.userId, data.uid, m);
-          user.arrival = 1;
-          this.add({ user });
+          const user = new User(data.userId, data.uid, message);
+          user.badge = 1;
+          this.addUser({ user });
         }
       });
     });
