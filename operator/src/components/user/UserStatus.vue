@@ -3,7 +3,7 @@
     <template v-slot:badge>
       <span>{{ user.arrival }}</span>
     </template>
-    <v-card class="mx-auto" color="#26c6da" dark max-width="400">
+    <v-card class="mx-auto">
       <v-card-title>
         <span class="title font-weight-light">
           <router-link :to="{ name: 'chat', params: { uid: user.uid }}">{{ user.uid }}</router-link>

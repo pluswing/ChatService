@@ -4,7 +4,7 @@
       <v-layout>
         <v-flex xs9>
           <v-layout wrap>
-            <v-flex xs3 v-for="user in users" :key="user.id">
+            <v-flex xs6 v-for="user in users" :key="user.id">
               <UserStatus style="margin:10px;" :user="user"/>
             </v-flex>
           </v-layout>
@@ -59,11 +59,7 @@ export default class Home extends Vue {
       socket.setOnMessage((event) => {
         const data = JSON.parse(event.data);
         if (data.method === 'post') {
-          const m = new Message(data.message);
-          m.id = data.id;
-          m.uid = data.uid;
-          m.operatorId = data.operatorId;
-          m.createdAt = new Date(data.createdAt);
+          const m = Message.from(data);
           this.messages.unshift(m);
 
           const user = new User(data.userId, data.uid, m);

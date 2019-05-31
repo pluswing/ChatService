@@ -69,7 +69,7 @@ const bind = (path: string, originalApp: Express.Application) => {
                 await userMessageDao.add(um);
                 const resp = JSON.stringify({
                     method: 'post',
-                    message: um.body,
+                    body: um.body,
                     id: um.id,
                     operatorId: null,
                     createdAt: um.createdAt,

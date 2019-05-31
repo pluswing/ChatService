@@ -96,7 +96,7 @@ app.post('/send', async (req, res) => {
     const um = await mrepo.add(userMessage);
     const resp = JSON.stringify({
         method: 'post',
-        message: um.body,
+        body: um.body,
         id: um.id,
         operatorId: um.operatorId,
         createdAt: um.createdAt,

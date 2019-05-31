@@ -1,10 +1,9 @@
-import { Message } from './Message';
-import { users } from '@/store/users';
+import { IMessage, Message } from './Message';
 
 export interface IUser {
     id: number;
     uid: string;
-    message: Message;
+    message: IMessage;
     arrival: number;
 }
 

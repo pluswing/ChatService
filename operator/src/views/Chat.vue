@@ -33,14 +33,13 @@ export default class Chat extends Vue {
   public async created() {
     socket.connect(this.operator.token, () => {
       socket.setOnMessage((event) => {
-        console.log(event.data);
         const data = JSON.parse(event.data);
         if (data.method === 'post') {
-          const m = new Message(data.message);
-          m.id = data.id;
-          m.operatorId = data.operatorId;
-          m.createdAt = new Date(data.createdAt);
-          this.messages.push(m);
+          const uid = this.$route.params.uid;
+          const m = Message.from(data);
+          if (uid === m.uid) {
+            this.messages.push(m);
+          }
         }
       });
     });
@@ -54,16 +53,6 @@ export default class Chat extends Vue {
     sendChat.onNewMessage = (m: Message) => {
       this.messages.push(m);
     };
-  }
-
-  public async beforeDestroy() {
-    this.connection.send(
-      JSON.stringify({
-        method: 'disconnect',
-        isOperator: true,
-        token: this.operator.token,
-      }),
-    );
   }
 
   public async send(input: string) {
