@@ -40,24 +40,20 @@ import { UsersState } from '../store/users';
 export default class Home extends Vue {
   @State('operator') public operator!: OperatorState;
 
-  @Mutation('users/add') public addUser!: (payload: { user: IUser }) => void;
-  @Mutation('users/clear') public clearUser!: () => void;
+  @Mutation('users/add') public addUser!: (payload: { user: IUser, ignoreBadgeCount: boolean }) => void;
+  // @Mutation('users/clear') public clearUser!: () => void;
   @Getter('users/users') public users!: User[];
 
   @Mutation('messages/add') public addMessage!: (payload: { message: IMessage }) => void;
-  @Mutation('messages/clear') public clearMessage!: () => void;
+  // @Mutation('messages/clear') public clearMessage!: () => void;
   @Getter('messages/messages') public messages!: Message[];
 
   private getusers = new GetUsers(new UserApi());
 
   public async mounted() {
     const users = await this.getusers.do(this.operator.token);
-    // TODO あとで消す。
-    this.clearUser();
-    this.clearMessage();
-
     users.forEach((user) => {
-      this.addUser({ user });
+      this.addUser({ user, ignoreBadgeCount: true });
     });
   }
 
@@ -71,7 +67,7 @@ export default class Home extends Vue {
 
           const user = new User(data.userId, data.uid, message);
           user.badge = 1;
-          this.addUser({ user });
+          this.addUser({ user, ignoreBadgeCount: false });
         }
       });
     });

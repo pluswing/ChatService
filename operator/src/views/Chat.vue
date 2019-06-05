@@ -9,13 +9,14 @@
 import { Component, Vue } from 'vue-property-decorator';
 import ChatHistory from '@/components/chat/ChatHistory.vue';
 import ChatInputForm from '@/components/chat/ChatInputForm.vue';
-import { Message } from '@/models/Message';
+import { Message, IMessage } from '@/models/Message';
 import { SendChat } from '@/usecases/SendChat';
 import { ChatApi } from '@/repositories/ChatApi';
-import { State } from 'vuex-class';
+import { State, Mutation } from 'vuex-class';
 import { OperatorState } from '../store/operator';
 import GetMessages from '@/usecases/GetMessages';
 import socket from '../socket/socket';
+import { User, IUser } from '../models/User';
 
 const sendChat = new SendChat(new ChatApi());
 
@@ -27,6 +28,8 @@ const sendChat = new SendChat(new ChatApi());
 })
 export default class Chat extends Vue {
   @State('operator') public operator!: OperatorState;
+  @Mutation('users/add') public addUser!: (payload: { user: IUser, ignoreBadgeCount: boolean }) => void;
+  @Mutation('messages/add') public addMessage!: (payload: { message: IMessage }) => void;
   public messages: Message[] = [];
   public getmessages = new GetMessages(new ChatApi());
 
@@ -35,11 +38,18 @@ export default class Chat extends Vue {
       socket.setOnMessage((event) => {
         const data = JSON.parse(event.data);
         if (data.method === 'post') {
+
           const uid = this.$route.params.uid;
-          const m = Message.from(data);
-          if (uid === m.uid) {
-            this.messages.push(m);
+          const message = Message.from(data);
+          if (uid === message.uid) {
+            this.messages.push(message);
           }
+
+          this.addMessage({ message });
+
+          const user = new User(data.userId, data.uid, message);
+          user.badge = 1;
+          this.addUser({ user, ignoreBadgeCount: false });
         }
       });
     });

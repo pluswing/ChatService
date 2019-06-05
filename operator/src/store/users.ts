@@ -13,6 +13,7 @@ export interface UsersGetters {
 export interface UsersMutations {
     add: {
         user: IUser,
+        ignoreBadgeCount: boolean,
     };
     clear: {};
 }
@@ -34,12 +35,14 @@ const getters: DefineGetters<UsersGetters, UsersState> = {
 };
 
 const mutations: DefineMutations<UsersMutations, UsersState> = {
-    add(s, { user }) {
+    add(s, { user, ignoreBadgeCount }) {
         const already = s.users.find((u) => u.uid === user.uid);
         if (already) {
             // すでにいる場合
             already.message = user.message;
-            already.badge = already.badge + 1;
+            if (!ignoreBadgeCount) {
+                already.badge = already.badge + 1;
+            }
         } else {
             // いない場合は、追加する
             s.users.push(user);
