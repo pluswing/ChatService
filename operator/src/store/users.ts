@@ -16,6 +16,9 @@ export interface UsersMutations {
         ignoreBadgeCount: boolean,
     };
     clear: {};
+    clearBadge: {
+        uid: string,
+    };
 }
 
 /*
@@ -50,6 +53,12 @@ const mutations: DefineMutations<UsersMutations, UsersState> = {
     },
     clear(s) {
         s.users = [];
+    },
+    clearBadge(s, { uid }) {
+        const user = s.users.find((u) => u.uid === uid);
+        if (user) {
+            user.badge = 0;
+        }
     },
 };
 

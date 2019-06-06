@@ -50,14 +50,12 @@ export default class Home extends Vue {
 
   private getusers = new GetUsers(new UserApi());
 
-  public async mounted() {
+  public async created() {
     const users = await this.getusers.do(this.operator.token);
     users.forEach((user) => {
       this.addUser({ user, ignoreBadgeCount: true });
     });
-  }
 
-  public async created() {
     socket.connect(this.operator.token, () => {
       socket.setOnMessage((event) => {
         const data = JSON.parse(event.data);

@@ -30,16 +30,27 @@ export default class Chat extends Vue {
   @State('operator') public operator!: OperatorState;
   @Mutation('users/add') public addUser!: (payload: { user: IUser, ignoreBadgeCount: boolean }) => void;
   @Mutation('messages/add') public addMessage!: (payload: { message: IMessage }) => void;
+  @Mutation('users/clearBadge') public clearBadge!: (payload: { uid: string }) => void;
+
   public messages: Message[] = [];
   public getmessages = new GetMessages(new ChatApi());
 
   public async created() {
+    const uid = this.$route.params.uid;
+
+    this.clearBadge({ uid });
+
+    this.messages = await this.getmessages.handle(uid, this.operator.token);
+
+    sendChat.onNewMessage = (m: Message) => {
+      this.messages.push(m);
+    };
+
     socket.connect(this.operator.token, () => {
       socket.setOnMessage((event) => {
         const data = JSON.parse(event.data);
         if (data.method === 'post') {
 
-          const uid = this.$route.params.uid;
           const message = Message.from(data);
           if (uid === message.uid) {
             this.messages.push(message);
@@ -53,16 +64,6 @@ export default class Chat extends Vue {
         }
       });
     });
-  }
-
-  public async mounted() {
-    const uid = this.$route.params.uid;
-
-    this.messages = await this.getmessages.handle(uid, this.operator.token);
-
-    sendChat.onNewMessage = (m: Message) => {
-      this.messages.push(m);
-    };
   }
 
   public async send(input: string) {
