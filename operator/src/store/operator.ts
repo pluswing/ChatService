@@ -18,6 +18,7 @@ export interface OperatorMutations {
         loginId: string,
         token: string,
     };
+    logout: {};
 }
 
 /*
@@ -44,6 +45,12 @@ const mutations: DefineMutations<OperatorMutations, OperatorState> = {
         s.name = name;
         s.loginId = loginId;
         s.token = token;
+    },
+    logout(s) {
+        s.id = 0;
+        s.name = '';
+        s.loginId = '';
+        s.token = '';
     },
 };
 

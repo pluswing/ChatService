@@ -43,11 +43,9 @@ export default class Home extends Vue {
   @State('operator') public operator!: OperatorState;
 
   @Mutation('users/add') public addUser!: (payload: { user: IUser, ignoreBadgeCount: boolean }) => void;
-  // @Mutation('users/clear') public clearUser!: () => void;
   @Getter('users/users') public users!: User[];
 
   @Mutation('messages/add') public addMessage!: (payload: { message: IMessage }) => void;
-  // @Mutation('messages/clear') public clearMessage!: () => void;
   @Getter('messages/messages') public messages!: Message[];
 
   private getusers = new GetUsers(new UserApi());

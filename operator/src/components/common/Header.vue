@@ -6,15 +6,24 @@
 
     <v-spacer></v-spacer>
     {{ operator.loginId }}
-    <v-btn icon>
-      <v-icon>fas fa-user</v-icon>
-    </v-btn>
+    <v-menu offset-y>
+      <template v-slot:activator="{ on }">
+        <v-btn icon v-on="on">
+          <v-icon>fas fa-user</v-icon>
+        </v-btn>
+      </template>
+      <v-list>
+        <v-list-tile @click="doLogout">
+          <v-list-tile-title>Logout</v-list-tile-title>
+        </v-list-tile>
+      </v-list>
+    </v-menu>
   </v-toolbar>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import { State } from 'vuex-class';
+import { State, Mutation } from 'vuex-class';
 import { OperatorState } from '@/store/operator';
 @Component({
   components: {
@@ -22,7 +31,12 @@ import { OperatorState } from '@/store/operator';
 })
 export default class Header extends Vue {
   @State('operator') public operator!: OperatorState;
+  @Mutation('operator/logout') public logout!: () => void;
 
+  public doLogout() {
+    this.logout();
+    this.$router.replace({ name: 'login' });
+  }
 }
 </script>
 

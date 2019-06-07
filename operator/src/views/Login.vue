@@ -1,13 +1,20 @@
 <template>
-  <div>
-    <h1>LOGIN</h1>
-    <div>{{message}}</div>
-    <input type="text" v-model="loginid">
-    <br>
-    <input type="password" v-model="password">
-    <br>
-    <button @click="login">LOGIN</button>
-  </div>
+  <v-content>
+    <Header/>
+    <div class="headline" style="text-align:left;margin:10px;">Login</div>
+    <v-layout>
+      <v-flex xs6 offset-xs3>
+        <v-alert :value="message != ''" type="error">{{ message }}</v-alert>
+        <div>
+          <v-text-field v-model="loginid" label="loginID" required></v-text-field>
+          <br>
+          <v-text-field v-model="password" label="password" type="password" required></v-text-field>
+          <br>
+          <v-btn color="info" @click="login">LOGIN</v-btn>
+        </div>
+      </v-flex>
+    </v-layout>
+  </v-content>
 </template>
 
 <script lang="ts">
@@ -28,11 +35,15 @@ export default class Login extends Vue {
 
   public async login() {
     const o = new Operator(this.loginid, this.password);
-    await loginUsecase.login(o);
+    try {
+      await loginUsecase.login(o);
 
-    if (o.isLoggedIn()) {
-      this.loggedIn(o);
-      this.$router.replace({ name: 'user' });
+      if (o.isLoggedIn()) {
+        this.loggedIn(o);
+        this.$router.replace({ name: 'user' });
+      }
+    } catch (e) {
+      this.message = 'failed logged in.';
     }
   }
 }
