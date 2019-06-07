@@ -2,12 +2,12 @@
   <v-list two-line>
     <template v-for="message in messages">
       <v-list-tile :key="message.id" avatar ripple @click="toggle(index)">
-        <router-link :to="{ name: 'chat', params: { uid: message.uid }}">
-          <v-list-tile-content>
+        <v-list-tile-content>
+          <router-link :to="{ name: 'chat', params: { uid: message.uid }}">
             <v-list-tile-title>{{ message.uid }}</v-list-tile-title>
-            <v-list-tile-sub-title>{{ message.body }}</v-list-tile-sub-title>
-          </v-list-tile-content>
-        </router-link>
+          </router-link>
+          <v-list-tile-sub-title>{{ message.body }}</v-list-tile-sub-title>
+        </v-list-tile-content>
 
         <v-list-tile-action>
           <v-list-tile-action-text>{{ message.fromNow() }}</v-list-tile-action-text>

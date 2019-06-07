@@ -1,26 +1,27 @@
 <template>
-  <v-app>
-    <v-content>
-      <v-layout>
-        <v-flex xs9>
-          <v-layout wrap>
-            <v-flex xs6 v-for="user in users" :key="user.id">
-              <UserStatus style="margin:10px;" :user="user"/>
-            </v-flex>
-          </v-layout>
-        </v-flex>
-        <v-flex xs3>
-          <Activities :messages="messages"/>
-        </v-flex>
-      </v-layout>
-    </v-content>
-  </v-app>
+  <v-content>
+    <Header/>
+    <div class="headline" style="text-align:left;margin:10px;">Users</div>
+    <v-layout>
+      <v-flex xs9>
+        <v-layout wrap>
+          <v-flex xs6 v-for="user in users" :key="user.id">
+            <UserStatus style="margin:10px;" :user="user"/>
+          </v-flex>
+        </v-layout>
+      </v-flex>
+      <v-flex xs3>
+        <Activities style="margin:10px;" :messages="messages"/>
+      </v-flex>
+    </v-layout>
+  </v-content>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import UserStatus from '@/components/user/UserStatus.vue';
 import Activities from '@/components/user/Activities.vue';
+import Header from '@/components/common/Header.vue';
 import { Message, IMessage } from '../models/Message';
 import { User, IUser } from '../models/User';
 import axios from 'axios';
@@ -35,6 +36,7 @@ import { UsersState } from '../store/users';
   components: {
     UserStatus,
     Activities,
+    Header,
   },
 })
 export default class Home extends Vue {
@@ -51,11 +53,11 @@ export default class Home extends Vue {
   private getusers = new GetUsers(new UserApi());
 
   public async created() {
-    const users = await this.getusers.do(this.operator.token);
-    users.forEach((user) => {
-      this.addUser({ user, ignoreBadgeCount: true });
-    });
+    this.initSocket();
+    await this.loadUsers();
+  }
 
+  private initSocket() {
     socket.connect(this.operator.token, () => {
       socket.setOnMessage((event) => {
         const data = JSON.parse(event.data);
@@ -68,6 +70,13 @@ export default class Home extends Vue {
           this.addUser({ user, ignoreBadgeCount: false });
         }
       });
+    });
+  }
+
+  private async loadUsers() {
+    const users = await this.getusers.do(this.operator.token);
+    users.forEach((user) => {
+      this.addUser({ user, ignoreBadgeCount: true });
     });
   }
 }

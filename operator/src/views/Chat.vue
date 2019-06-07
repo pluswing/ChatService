@@ -1,14 +1,17 @@
 <template>
-  <v-container>
+  <v-content>
+    <Header/>
+    <div class="headline" style="text-align:left;margin:10px;">{{ uid }}'s Messages</div>
     <ChatHistory :messages="messages"/>
     <ChatInputForm @send="send"/>
-  </v-container>
+  </v-content>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import ChatHistory from '@/components/chat/ChatHistory.vue';
 import ChatInputForm from '@/components/chat/ChatInputForm.vue';
+import Header from '@/components/common/Header.vue';
 import { Message, IMessage } from '@/models/Message';
 import { SendChat } from '@/usecases/SendChat';
 import { ChatApi } from '@/repositories/ChatApi';
@@ -24,6 +27,7 @@ const sendChat = new SendChat(new ChatApi());
   components: {
     ChatHistory,
     ChatInputForm,
+    Header,
   },
 })
 export default class Chat extends Vue {
@@ -34,25 +38,39 @@ export default class Chat extends Vue {
 
   public messages: Message[] = [];
   public getmessages = new GetMessages(new ChatApi());
+  private uid: string = '';
 
   public async created() {
-    const uid = this.$route.params.uid;
+    this.uid = this.$route.params.uid;
 
-    this.clearBadge({ uid });
+    this.clearBadge({ uid: this.uid });
 
-    this.messages = await this.getmessages.handle(uid, this.operator.token);
+    this.initSocket();
 
+    await this.loadMessages();
+  }
+
+  public async send(input: string) {
+    const m = new Message(input);
+    m.uid = this.$route.params.uid;
+    await sendChat.post(m, this.operator.token);
+  }
+
+  private async loadMessages() {
+    this.messages = await this.getmessages.handle(this.uid, this.operator.token);
     sendChat.onNewMessage = (m: Message) => {
       this.messages.push(m);
     };
+  }
 
+  private initSocket() {
     socket.connect(this.operator.token, () => {
       socket.setOnMessage((event) => {
         const data = JSON.parse(event.data);
         if (data.method === 'post') {
 
           const message = Message.from(data);
-          if (uid === message.uid) {
+          if (this.uid === message.uid) {
             this.messages.push(message);
           }
 
@@ -64,12 +82,6 @@ export default class Chat extends Vue {
         }
       });
     });
-  }
-
-  public async send(input: string) {
-    const m = new Message(input);
-    m.uid = this.$route.params.uid;
-    await sendChat.post(m, this.operator.token);
   }
 }
 </script>

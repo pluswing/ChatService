@@ -1,6 +1,6 @@
 <template>
   <v-card>
-    <v-badge v-model="showBadge" color="red" right overlap>
+    <v-badge v-model="showBadge" style="position:initial;" color="red" right overlap>
       <template v-slot:badge>
         <span>{{ user.badge }}</span>
       </template>
