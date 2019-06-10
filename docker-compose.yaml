@@ -2,15 +2,15 @@ version: '3'
 services:
   api:
     build: ./api
-    working_dir: "/api"
+#    working_dir: "/api"
     tty: true
     links:
       - mysql
-    volumes:
-      - "./api:/api"
+#    volumes:
+#      - "./api:/api"
     ports:
       - "3010:3000"
-    command: "npm run dev"
+#    command: "npm run dev"
     environment:
       DB_HOST: 'mysql'
       DB_USER: 'root'
