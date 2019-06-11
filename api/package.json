@@ -22,6 +22,8 @@
   },
   "devDependencies": {
     "@types/express": "^4.16.0",
+    "db-migrate": "^0.11.6",
+    "db-migrate-mysql": "^1.1.10",
     "nodemon": "^1.18.4",
     "ts-loader": "^5.1.0",
     "ts-node": "^7.0.1",
