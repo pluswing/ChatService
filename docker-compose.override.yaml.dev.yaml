@@ -1,0 +1,7 @@
+version: '3'
+services:
+  api:
+    working_dir: "/api2"
+    volumes:
+      - "./api:/api2"
+    command: "npm run dev"

@@ -37,7 +37,7 @@ const bind = (path: string, originalApp: Express.Application) => {
             if (m.method === 'register') {
                 // 登録処理
                 if (m.isOperator) {
-                    const decoded: any = jwt.verify(m.token, 'secret');
+                    const decoded: any = jwt.verify(m.token, process.env.SECRET || '');
                     const operator = await operatorDao.find(decoded.sub);
                     if (operator != null) {
                         sockets.addOperatorSocket(operator, ws);
@@ -51,7 +51,7 @@ const bind = (path: string, originalApp: Express.Application) => {
 
             if (m.method === 'disconnect') {
                 if (m.isOperator) {
-                    const decoded: any = jwt.verify(m.token, 'secret');
+                    const decoded: any = jwt.verify(m.token, process.env.SECRET || '');
                     const operator = await operatorDao.find(decoded.sub);
                     if (operator != null) {
                         sockets.removeOperatorSocket(operator);

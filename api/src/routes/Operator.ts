@@ -13,10 +13,10 @@ import sockets from '../websocket/sockets';
 
 const opRepo = new OperatorDAO();
 
-const secret = 'secret'; // FIXME
+const secret = process.env.SECRET || '';
 const signOptions = {
-    issuer: 'accounts.examplesoft.com', // FIXME
-    audience: 'yoursite.net', // FIXME
+    issuer: process.env.ISSUER,
+    audience: process.env.AUDIENCE,
 };
 
 const opts = {

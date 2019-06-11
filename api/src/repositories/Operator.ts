@@ -13,7 +13,7 @@ export class Operator {
     }
 
     toDigest(password: string) {
-        const secret = 'abcdefg';
+        const secret = process.env.DIGEST_SECRET || '';
         return crypto.createHmac('sha256', secret)
             .update(password)
             .digest('hex');
