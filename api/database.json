@@ -1,6 +1,18 @@
 {
     "defaultEnv": "mysql",
     "sql-file": true,
+    "mysql_org": {
+        "driver": "mysql",
+        "host": {
+            "ENV": "DB_HOST"
+        },
+        "user": {
+            "ENV": "DB_USER"
+        },
+        "password": {
+            "ENV": "DB_PASSWORD"
+        }
+    },
     "mysql": {
         "driver": "mysql",
         "host": {

@@ -40,7 +40,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack",
     "start": "forever dist/server.js",
-    "prestart": "npm run build"
+    "prestart": "npm run db:create && npm run db:migrate && npm run build",
+    "db:create": "db-migrate db:create -e mysql_org $DB_NAME",
+    "db:migrate": "db-migrate up"
   },
   "author": "pluswing Inc.",
   "license": "ISC"
