@@ -27,15 +27,11 @@ services:
     command: "sh ./run.sh"
   operator:
     build: ./operator
-    working_dir: "/operator"
     tty: true
-    volumes:
-      - "./operator:/operator"
     ports:
       - "3012:3002"
-    command: "npm run serve"
     environment:
-      VUE_APP_API_ENDPOINT: "http://localhost:3010"
+      VUE_APP_API_ENDPOINT: $API_ENDPOINT
   mysql:
     build: ./mysql
     tty: true

@@ -14,6 +14,7 @@
     "@types/request-promise": "^4.1.42",
     "axios": "^0.18.0",
     "babel-loader": "^8.0.2",
+    "http-server": "^0.11.1",
     "moment": "^2.24.0",
     "register-service-worker": "^1.0.0",
     "request-promise": "^4.2.2",

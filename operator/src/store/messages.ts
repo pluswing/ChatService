@@ -35,7 +35,6 @@ const getters: DefineGetters<MessagesGetters, MessagesState> = {
 
 const mutations: DefineMutations<MessagesMutations, MessagesState> = {
     add(s, { message }) {
-        // TODO もしかしたらidで重複チェックする必要があるかもしれない
         s.messages.unshift(message);
     },
     clear(s) {

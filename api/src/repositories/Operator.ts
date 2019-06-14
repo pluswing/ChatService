@@ -46,12 +46,11 @@ class OperatorMemory implements OperatorRepository {
 
     async create(name: string, loginId: string, password: string): Promise<Operator> {
         if (this.availableLoginId(loginId)) {
-            throw new Error('already login id'); // FIXME
+            throw new Error('already login id');
         }
         if (this.operators[loginId]) {
             return this.operators[loginId];
         }
-        // FIXME passwordはhash化する。
         const o = new Operator(name, loginId, password);
         o.id = Object.keys(this.operators).length + 1;
         this.operators[loginId] = o;
@@ -63,7 +62,6 @@ class OperatorMemory implements OperatorRepository {
     }
 
     async update(operator: Operator): Promise<Operator> {
-        // FIXME loginIdが変わった時に変更前のデータが残る問題。
         this.operators[operator.loginId] = operator;
         return operator;
     }
