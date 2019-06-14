@@ -42,7 +42,8 @@
     "start": "forever dist/server.js",
     "prestart": "npm run db:create && npm run db:migrate && npm run build",
     "db:create": "db-migrate db:create -e mysql_org $DB_NAME",
-    "db:migrate": "db-migrate up"
+    "db:migrate": "db-migrate up",
+    "operator:create": "ts-node bin/create_operator.ts"
   },
   "author": "pluswing Inc.",
   "license": "ISC"
