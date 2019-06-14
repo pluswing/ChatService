@@ -1,8 +1,9 @@
 const path = require('path');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
+const Dotenv = require('dotenv-webpack');
 
 module.exports = {
-    mode: 'development',
+    mode: process.env.NODE_ENV,
     entry: './src/main.ts',
     module: {
         rules: [
@@ -37,7 +38,7 @@ module.exports = {
                     /node_modules/
                 ],
                 options: {
-                    configFile: 'tsconfig.dev.json',
+                    configFile: 'tsconfig.json',
                     appendTsSuffixTo: [/\.vue$/]
                 }
             },
@@ -48,17 +49,21 @@ module.exports = {
         ],
     },
     resolve: {
-        extensions: [ '.ts', '.js', '.vue' ],
+        extensions: ['.ts', '.js', '.vue'],
         alias: {
             'vue$': 'vue/dist/vue.esm.js'
         }
     },
     plugins: [
-        new VueLoaderPlugin()
+        new VueLoaderPlugin(),
+        new Dotenv({
+            systemvars: true,
+            silent: true,
+        })
     ],
     output: {
         library: 'PluswingChatService',
-        path: path.resolve(__dirname, 'public'),        
+        path: path.resolve(__dirname, 'public'),
         filename: "[name].bundle.js",
         libraryTarget: 'umd'
     }

@@ -18,13 +18,12 @@ services:
       - DIGEST_SECRET
   client:
     build: ./client
-    working_dir: "/client"
     tty: true
-    volumes:
-      - "./client:/client"
     ports:
       - "3011:3001"
-    command: "sh ./run.sh"
+    environment:
+      - API_ENDPOINT
+      - API_ENDPOINT_WS
   operator:
     build: ./operator
     tty: true

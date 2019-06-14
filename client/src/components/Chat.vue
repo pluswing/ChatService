@@ -14,6 +14,9 @@ import ChatInputForm from './ChatInputForm.vue';
 import { Message } from '../models/Message';
 import axios from 'axios';
 
+const API_ENDPOINT = process.env.API_ENDPOINT;
+const API_ENDPOINT_WS = process.env.API_ENDPOINT_WS;
+
 @Component({
   components: {
     Header,
@@ -26,7 +29,7 @@ export default class Chat extends Vue {
   public messages: Message[] = [];
   @Prop() private uid!: string;
 
-  private connection = new WebSocket('ws://localhost:3010/v1/chat/ws/');
+  private connection = new WebSocket(`${API_ENDPOINT_WS}/v1/chat/ws/`);
 
   public async created() {
     this.connection.onopen = () => {
@@ -51,7 +54,7 @@ export default class Chat extends Vue {
     };
 
     // load histories
-    const res = await axios.post('http://localhost:3010/v1/chat/histories', {
+    const res = await axios.post(`${API_ENDPOINT}/v1/chat/histories`, {
       uid: this.uid,
     });
     res.data.forEach((um: any) => {
