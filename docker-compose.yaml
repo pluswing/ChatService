@@ -17,7 +17,11 @@ services:
       - AUDIENCE
       - DIGEST_SECRET
   client:
-    build: ./client
+    build:
+      context: ./client
+      args:
+        API_ENDPOINT: $API_ENDPOINT
+        API_ENDPOINT_WS: $API_ENDPOINT_WS
     tty: true
     ports:
       - "3011:3001"
@@ -40,4 +44,4 @@ services:
     ports:
       - "3306:3306"
     environment:
-      MYSQL_ROOT_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: $DB_PASSWORD

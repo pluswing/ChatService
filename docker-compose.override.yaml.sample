@@ -1,0 +1,17 @@
+version: '3'
+services:
+  api:
+    working_dir: "/api2"
+    volumes:
+      - "./api:/api2"
+    command: "npm run dev"
+  client:
+    working_dir: "/client2"
+    volumes:
+      - "./client:/client2"
+    command: "sh ./run.sh"
+  operator:
+    working_dir: "/operator2"
+    volumes:
+      - "./operator:/operator2"
+    command: "npm run serve"
