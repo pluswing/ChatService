@@ -44,7 +44,7 @@
     "db:create": "db-migrate db:create -e mysql_org $DB_NAME",
     "db:migrate": "db-migrate up",
     "operator:create": "ts-node bin/create_operator.ts",
-    "operator:create_by_env": "npm run operator:create $OPERATOR_NAME $OPERATOR_LOGIN_ID $OPERATOR_PASSWORD",
+    "operator:create_by_env": "npm run operator:create $OPERATOR_NAME $OPERATOR_LOGIN_ID $OPERATOR_PASSWORD"
   },
   "author": "pluswing Inc.",
   "license": "ISC"
