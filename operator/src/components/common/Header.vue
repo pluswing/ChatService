@@ -6,7 +6,7 @@
 
     <v-spacer></v-spacer>
     {{ operator.loginId }}
-    <v-menu offset-y>
+    <v-menu v-if="operator" offset-y>
       <template v-slot:activator="{ on }">
         <v-btn icon v-on="on">
           <v-icon>fas fa-user</v-icon>
@@ -22,9 +22,9 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
-import { State, Mutation } from 'vuex-class';
 import { OperatorState } from '@/store/operator';
+import { Component, Vue } from 'vue-property-decorator';
+import { Mutation, State } from 'vuex-class';
 @Component({
   components: {
   },

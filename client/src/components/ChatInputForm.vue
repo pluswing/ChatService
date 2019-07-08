@@ -1,9 +1,9 @@
 <template>
   <div class="input_form">
     <div class="input_text">
-      <textarea v-model="input" rows="3" class="textarea input_text"></textarea>
+      <textarea v-model="input" rows="3" class="textarea input_text is-info"></textarea>
     </div>
-    <button class="button is-primary send" @click="onClickSend">Send</button>
+    <button class="send button is-info" @click="onClickSend">Send</button>
   </div>
 </template>
 
@@ -13,10 +13,10 @@ import { Component, Emit, Vue } from 'vue-property-decorator';
 @Component
 export default class ChatInputForm extends Vue {
   public input: string = '';
-
   @Emit() public send(input: string) { }
 
   public onClickSend() {
+    if (this.input.trim() === '') { return; }
     this.send(this.input);
     this.input = '';
   }
@@ -34,7 +34,12 @@ export default class ChatInputForm extends Vue {
   .send {
     right: 5px;
     bottom: 5px;
+    background-color: #1976d2 !important;
+    color: #ffffff;
     position: absolute;
+    &:hover {
+      color: #ffffff;
+    }
   }
 }
 </style>

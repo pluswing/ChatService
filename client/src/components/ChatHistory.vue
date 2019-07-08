@@ -1,15 +1,15 @@
 <template>
   <div class="messages" style="overflow-y:scroll;">
     <div v-for="message in messages" :key="message.id">
-      <ChatMessage :message="message"/>
+      <ChatMessage :message="message" />
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from 'vue-property-decorator';
-import ChatMessage from './ChatMessage.vue';
+import { Component, Prop, Vue } from 'vue-property-decorator';
 import { Message } from '../models/Message';
+import ChatMessage from './ChatMessage.vue';
 
 @Component({
   components: {

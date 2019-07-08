@@ -1,25 +1,26 @@
 <template>
   <v-content>
-    <Header/>
+    <Header />
     <div class="headline" style="text-align:left;margin:10px;">{{ uid }}'s Messages</div>
-    <ChatHistory :messages="messages"/>
-    <ChatInputForm @send="send"/>
+    <ChatHistory :messages="messages" />
+    <ChatInputForm @send="send" />
   </v-content>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
 import ChatHistory from '@/components/chat/ChatHistory.vue';
 import ChatInputForm from '@/components/chat/ChatInputForm.vue';
 import Header from '@/components/common/Header.vue';
-import { Message, IMessage } from '@/models/Message';
-import { SendChat } from '@/usecases/SendChat';
+import { IMessage, Message } from '@/models/Message';
 import { ChatApi } from '@/repositories/ChatApi';
-import { State, Mutation } from 'vuex-class';
-import { OperatorState } from '../store/operator';
 import GetMessages from '@/usecases/GetMessages';
+import { SendChat } from '@/usecases/SendChat';
+import { Component, Vue } from 'vue-property-decorator';
+import { Mutation, State } from 'vuex-class';
+import { IUser, User } from '../models/User';
+import { initApi } from '../repositories/api';
 import socket from '../socket/socket';
-import { User, IUser } from '../models/User';
+import { OperatorState } from '../store/operator';
 
 const sendChat = new SendChat(new ChatApi());
 
@@ -41,6 +42,7 @@ export default class Chat extends Vue {
   private uid: string = '';
 
   public async created() {
+    initApi(this.operator.token);
     this.uid = this.$route.params.uid;
 
     this.clearBadge({ uid: this.uid });

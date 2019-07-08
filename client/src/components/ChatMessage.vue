@@ -1,14 +1,14 @@
 <template>
   <div style="margin:5px;">
     <div v-if="!message.isOperatorMessage()" style="margin-left:50px;">
-      <b-notification type="is-info" style="background-color:#80DEEA;" :closable="false">
+      <b-notification type="is-info" style="background-color:#1976D2;" :closable="false">
         <div style="text-align:right; white-space:pre;">{{message.message}}</div>
         <div style="text-align:right; font-size:8px;">{{ message.date() }}</div>
       </b-notification>
     </div>
 
     <div v-if="message.isOperatorMessage()" style="margin-right:50px;">
-      <b-notification :closable="false">
+      <b-notification :closable="false" style="background-color:#BDBDBD;">
         <div style="white-space:pre;">{{message.message}}</div>
         <div style="text-align:right; font-size:8px;">{{ message.date() }}</div>
       </b-notification>

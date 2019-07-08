@@ -1,7 +1,7 @@
 <template>
   <div class="pluswing_chat_service_container">
-    <Minimize v-if="minimized" title="チャット" @clicked="show"/>
-    <Chat v-if="!minimized" :uid="uid" @close="hide"/>
+    <Minimize v-if="minimized" title="チャット" @clicked="show" />
+    <Chat v-if="!minimized" :uid="uid" @close="hide" />
   </div>
 </template>
 
@@ -20,10 +20,6 @@ export default class App extends Vue {
   @Prop() private uid!: string;
 
   private minimized = true;
-
-  public mounted() {
-    console.log(this.uid);
-  }
 
   public show() {
     this.minimized = false;

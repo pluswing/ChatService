@@ -1,56 +1,54 @@
 <template>
   <v-content>
-    <Header/>
-    <div class="headline" style="text-align:left;margin:10px;">Users</div>
-    <v-layout>
+    <Header />
+    <v-layout style="padding:10px;">
       <v-flex xs9>
         <v-layout wrap>
           <v-flex xs6 v-for="user in users" :key="user.id">
-            <UserStatus style="margin:10px;" :user="user"/>
+            <UserStatus style="margin:10px;" :user="user" />
           </v-flex>
         </v-layout>
       </v-flex>
       <v-flex xs3>
-        <Activities style="margin:10px;" :messages="messages"/>
+        <Activities style="margin:10px;" :messages="messages" />
       </v-flex>
     </v-layout>
   </v-content>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
-import UserStatus from '@/components/user/UserStatus.vue';
-import Activities from '@/components/user/Activities.vue';
 import Header from '@/components/common/Header.vue';
-import { Message, IMessage } from '../models/Message';
-import { User, IUser } from '../models/User';
+import UserStatus from '@/components/user/UserStatus.vue';
 import axios from 'axios';
-import { State, Mutation, Getter } from 'vuex-class';
-import { OperatorState } from '../store/operator';
-import GetUsers from '../usecases/GetUsers';
+import { Component, Vue } from 'vue-property-decorator';
+import { Getter, Mutation, State } from 'vuex-class';
+import { IMessage, Message } from '../models/Message';
+import { IUser, User } from '../models/User';
+import { initApi } from '../repositories/api';
 import UserApi from '../repositories/UserApi';
 import socket from '../socket/socket';
+import { OperatorState } from '../store/operator';
 import { UsersState } from '../store/users';
+import GetUsers from '../usecases/GetUsers';
 
 @Component({
   components: {
     UserStatus,
-    Activities,
     Header,
   },
 })
-export default class Home extends Vue {
+export default class Users extends Vue {
   @State('operator') public operator!: OperatorState;
 
   @Mutation('users/add') public addUser!: (payload: { user: IUser, ignoreBadgeCount: boolean }) => void;
   @Getter('users/users') public users!: User[];
 
   @Mutation('messages/add') public addMessage!: (payload: { message: IMessage }) => void;
-  @Getter('messages/messages') public messages!: Message[];
 
   private getusers = new GetUsers(new UserApi());
 
   public async created() {
+    initApi(this.operator.token);
     this.initSocket();
     await this.loadUsers();
   }

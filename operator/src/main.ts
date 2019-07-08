@@ -1,9 +1,9 @@
 import Vue from 'vue';
+import Vuetify from 'vuetify';
 import App from './App.vue';
+import './registerServiceWorker';
 import router from './router';
 import store from './store/index';
-import './registerServiceWorker';
-import Vuetify from 'vuetify';
 
 import 'vuetify/dist/vuetify.min.css';
 

@@ -5,14 +5,14 @@
         <span>{{ user.badge }}</span>
       </template>
 
-      <v-card-title>
+      <v-card-title style="text-aligin:left;">
         <span class="title font-weight-light">
           <router-link :to="{ name: 'chat', params: { uid: user.uid }}">{{ user.uid }}</router-link>
         </span>
       </v-card-title>
     </v-badge>
 
-    <v-card-text class="headline">
+    <v-card-text class="headline" style="text-aligin:left;">
       <router-link :to="{ name: 'chat', params: { uid: user.uid }}">{{ user.message.body }}</router-link>
     </v-card-text>
 
@@ -27,8 +27,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
 import { User } from '@/models/User';
+import { Component, Prop, Vue } from 'vue-property-decorator';
 @Component({
   components: {
   },
@@ -37,7 +37,6 @@ export default class UserStatus extends Vue {
   @Prop() private user!: User;
 
   public mounted() {
-    console.log(this.user.message);
   }
 
   get showBadge(): boolean {

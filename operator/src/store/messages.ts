@@ -2,19 +2,18 @@ import { IMessage, Message } from '@/models/Message';
 import { DefineGetters, DefineMutations } from 'vuex-type-helper';
 
 export interface MessagesState {
-    messages: IMessage[];
+  messages: IMessage[];
 }
 
-
 export interface MessagesGetters {
-    messages: IMessage[];
+  messages: IMessage[];
 }
 
 export interface MessagesMutations {
-    add: {
-        message: IMessage,
-    };
-    clear: {};
+  add: {
+    message: IMessage;
+  };
+  clear: {};
 }
 
 /*
@@ -23,23 +22,22 @@ export interface OperatorActions {
 */
 
 const state: MessagesState = {
-    messages: [],
+  messages: [],
 };
 
-
 const getters: DefineGetters<MessagesGetters, MessagesState> = {
-    messages(s): Message[] {
-        return s.messages.map((m) => Message.from(m));
-    },
+  messages(s): Message[] {
+    return s.messages.map((m) => Message.from(m));
+  },
 };
 
 const mutations: DefineMutations<MessagesMutations, MessagesState> = {
-    add(s, { message }) {
-        s.messages.unshift(message);
-    },
-    clear(s) {
-        s.messages = [];
-    },
+  add(s, { message }) {
+    s.messages.unshift(message);
+  },
+  clear(s) {
+    s.messages = [];
+  },
 };
 
 /*
@@ -48,10 +46,9 @@ const actions: DefineActions<OperatorActions, OperatorState, OperatorMutations, 
 */
 
 export const messages = {
-    namespaced: true,
-    state,
-    getters,
-    mutations,
-    // actions,
+  namespaced: true,
+  state,
+  getters,
+  mutations,
+  // actions,
 };
-

@@ -1,6 +1,16 @@
 {
-    "extends": "tslint-config-airbnb",
-    "rules": {
-        "ter-indent": [true, 4]
-    }
+  "defaultSeverity": "warning",
+  "extends": ["tslint:recommended"],
+  "linterOptions": {
+    "exclude": ["node_modules/**"]
+  },
+  "rules": {
+    "quotemark": [true, "single"],
+    "indent": [true, "spaces", 2],
+    "interface-name": false,
+    "no-consecutive-blank-lines": false,
+    "no-empty": false,
+    "object-literal-sort-keys": false,
+    "max-classes-per-file": false
+  }
 }

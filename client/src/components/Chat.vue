@@ -1,27 +1,27 @@
 <template>
   <div class="chat_container">
-    <Header title="チャット" @close="onClickClose"/>
-    <ChatHistory :messages="messages"/>
-    <ChatInputForm @send="send"/>
+    <Header title="チャット" @close="onClickClose" />
+    <ChatHistory :messages="messages" />
+    <ChatInputForm @send="send" />
   </div>
 </template>
 
 <script lang="ts">
+import axios from 'axios';
 import { Component, Emit, Prop, Vue } from 'vue-property-decorator';
-import Header from './Header.vue';
+import { Message } from '../models/Message';
 import ChatHistory from './ChatHistory.vue';
 import ChatInputForm from './ChatInputForm.vue';
-import { Message } from '../models/Message';
-import axios from 'axios';
+import Header from './Header.vue';
 
 const API_ENDPOINT = process.env.API_ENDPOINT;
 const API_ENDPOINT_WS = process.env.API_ENDPOINT_WS;
 
 @Component({
   components: {
-    Header,
     ChatHistory,
     ChatInputForm,
+    Header,
   },
 })
 export default class Chat extends Vue {
@@ -30,6 +30,7 @@ export default class Chat extends Vue {
   @Prop() private uid!: string;
 
   private connection = new WebSocket(`${API_ENDPOINT_WS}/v1/chat/ws/`);
+  @Emit() public close() { }
 
   public async created() {
     this.connection.onopen = () => {
@@ -42,7 +43,6 @@ export default class Chat extends Vue {
     };
 
     this.connection.onmessage = (event) => {
-      console.log(event.data);
       const data = JSON.parse(event.data);
       if (data.method === 'post') {
         const message = new Message(data.body);
@@ -75,8 +75,6 @@ export default class Chat extends Vue {
     );
   }
 
-  @Emit() public close() { }
-
   public onClickClose() {
     this.close();
   }
@@ -84,8 +82,8 @@ export default class Chat extends Vue {
   public async send(input: string) {
     this.connection.send(
       JSON.stringify({
-        method: 'post',
         message: input,
+        method: 'post',
         uid: this.uid,
       }),
     );

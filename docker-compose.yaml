@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 services:
   api:
     build: ./api
@@ -16,6 +16,9 @@ services:
       - ISSUER
       - AUDIENCE
       - DIGEST_SECRET
+      - OPERATOR_NAME
+      - OPERATOR_LOGIN_ID
+      - OPERATOR_PASSWORD
   client:
     build:
       context: ./client
