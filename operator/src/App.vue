@@ -11,9 +11,15 @@
 <script lang="ts">
 import Header from '@/components/common/Header.vue';
 import Sidebar from '@/components/common/Sidebar.vue';
-import { Component, Vue } from 'vue-property-decorator';
-import { State } from 'vuex-class';
+import { Component, Vue, Watch } from 'vue-property-decorator';
+import { Getter, Mutation, State } from 'vuex-class';
+import { MessageConverter } from './converter/MessageConverter';
+import { UserConverter } from './converter/UserConverter';
+import { User } from './models/User';
+import { initApi } from './repositories/api';
+import socket from './socket/socket';
 import { StoreOperator } from './store/operator';
+import { StoreUser } from './store/users';
 
 @Component({
   components: {
@@ -23,15 +29,41 @@ import { StoreOperator } from './store/operator';
 })
 export default class App extends Vue {
   @State('operator') public operator!: StoreOperator;
+  @Mutation('users/add') public addUser!: (payload: { user: StoreUser, ignoreBadgeCount: boolean }) => void;
+  @Getter('users/users') public users!: User[];
 
   private showSide = false;
+
+  @Watch('operator.token')
+  public changeOperator() {
+    if (this.operator.token) {
+      initApi(this.operator.token);
+      this.initSocket();
+    }
+  }
 
   public sideClick() {
     this.showSide = !this.showSide;
   }
+
   public closeSide() {
     this.showSide = false;
   }
+
+  private initSocket() {
+    socket.connect(this.operator.token, () => {
+      socket.setOnMessage((event) => {
+        const data = JSON.parse(event.data);
+        if (data.method === 'post') {
+          const message = MessageConverter.convertMessage(data);
+          const user = UserConverter.convertUser(data, message);
+          user.badge = 1;
+          this.addUser({ user, ignoreBadgeCount: false });
+        }
+      });
+    });
+  }
+
 }
 </script>
 

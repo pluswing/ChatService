@@ -16,10 +16,22 @@ class Socket {
       );
       done();
     };
+    this.connection.onmessage = this.onMessage;
   }
 
   public setOnMessage(listener: (event: MessageEvent) => void) {
-    this.connection.onmessage = listener;
+    this.onMessageListener = listener;
+  }
+
+  public setOnMessageCustom(listener: (event: MessageEvent) => void) {
+    this.onMessageCustomListener = listener;
+  }
+
+  private onMessageListener: (event: MessageEvent) => void = () => {};
+  private onMessageCustomListener: (event: MessageEvent) => void = () => {};
+  private onMessage(event: MessageEvent) {
+    this.onMessageListener(event);
+    this.onMessageCustomListener(event);
   }
 }
 

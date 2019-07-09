@@ -19,7 +19,6 @@ import { UserConverter } from '../converter/UserConverter';
 import { User } from '../models/User';
 import { initApi } from '../repositories/api';
 import socket from '../socket/socket';
-import { StoreMessage } from '../store/messages';
 import { StoreOperator } from '../store/operator';
 import { StoreUser } from '../store/users';
 import { SendMessageUsecase } from '../usecases/SendMessageUsecase';
@@ -32,9 +31,6 @@ import { SendMessageUsecase } from '../usecases/SendMessageUsecase';
   },
 })
 export default class Chat extends Vue {
-  @State('operator') public operator!: StoreOperator;
-  @Mutation('users/add') public addUser!: (payload: { user: StoreUser, ignoreBadgeCount: boolean }) => void;
-  @Mutation('messages/add') public addMessage!: (payload: { message: StoreMessage }) => void;
   @Mutation('users/clearBadge') public clearBadge!: (payload: { uid: string }) => void;
 
   public messages: Message[] = [];
@@ -42,7 +38,6 @@ export default class Chat extends Vue {
   private sendChat = new SendMessageUsecase(new MessageApi());
 
   public async created() {
-    initApi(this.operator.token);
     this.uid = this.$route.params.uid;
 
     this.clearBadge({ uid: this.uid });
@@ -58,6 +53,10 @@ export default class Chat extends Vue {
     await this.sendChat.execute(m);
   }
 
+  public destroyed() {
+    socket.setOnMessageCustom((event) => { });
+  }
+
   private async loadMessages() {
     this.messages = await new MessageHistoriesUsecase(new MessageApi()).execute(this.uid);
     this.sendChat.onNewMessage = (m: Message) => {
@@ -66,20 +65,13 @@ export default class Chat extends Vue {
   }
 
   private initSocket() {
-    socket.connect(this.operator.token, () => {
-      socket.setOnMessage((event) => {
-        const data = JSON.parse(event.data);
-        if (data.method === 'post') {
-          const message = MessageConverter.convertMessage(data);
-          if (this.uid === message.uid) {
-            this.messages.push(message);
-          }
-          const user = UserConverter.convertUser(data, message);
-          user.badge = 1;
-          this.addUser({ user, ignoreBadgeCount: false });
-        }
-      });
+    socket.setOnMessageCustom((event) => {
+      const message = MessageConverter.convertMessage(event.data);
+      if (this.uid === message.uid) {
+        this.messages.push(message);
+      }
     });
   }
 }
+
 </script>

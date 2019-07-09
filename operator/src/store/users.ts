@@ -2,7 +2,14 @@ import { MessageConverter } from '@/converter/MessageConverter';
 import { UserConverter } from '@/converter/UserConverter';
 import { User } from '@/models/User';
 import { DefineGetters, DefineMutations } from 'vuex-type-helper';
-import { StoreMessage } from './messages';
+
+export interface StoreMessage {
+  id: number;
+  body: string;
+  uid: string;
+  createdAt: Date;
+  operatorId?: number;
+}
 
 export interface StoreUser {
   id: number;

@@ -5,6 +5,7 @@ let operatorToken = '';
 const initApi = (token: string) => {
   operatorToken = token;
 };
+
 const post = async (
   path: string,
   params: { [key: string]: any }): Promise<any> => {

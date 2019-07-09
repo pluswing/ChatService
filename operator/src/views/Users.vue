@@ -1,5 +1,5 @@
 <template>
-  <v-layout style="padding:10px;">
+  <v-layout row wrap style="padding:10px;">
     <v-flex xs6 v-for="user in users" :key="user.id">
       <UserStatus style="margin:10px;" :user="user" />
     </v-flex>
@@ -19,7 +19,6 @@ import { User } from '../models/User';
 import { initApi } from '../repositories/api';
 import { UserApi } from '../repositories/UserApi';
 import socket from '../socket/socket';
-import { StoreMessage } from '../store/messages';
 import { StoreOperator } from '../store/operator';
 import { StoreUser, UsersState } from '../store/users';
 import { GetUsersUsecase } from '../usecases/GetUsersUsecase';
@@ -31,32 +30,11 @@ import { GetUsersUsecase } from '../usecases/GetUsersUsecase';
   },
 })
 export default class Users extends Vue {
-  @State('operator') public operator!: StoreOperator;
-
   @Mutation('users/add') public addUser!: (payload: { user: StoreUser, ignoreBadgeCount: boolean }) => void;
   @Getter('users/users') public users!: User[];
 
-  @Mutation('messages/add') public addMessage!: (payload: { message: StoreMessage }) => void;
-
   public async created() {
-    initApi(this.operator.token);
-    this.initSocket();
     await this.loadUsers();
-  }
-
-  private initSocket() {
-    socket.connect(this.operator.token, () => {
-      socket.setOnMessage((event) => {
-        const data = JSON.parse(event.data);
-        if (data.method === 'post') {
-          const message = MessageConverter.convertMessage(data);
-          this.addMessage({ message });
-          const user = UserConverter.convertUser(data, message);
-          user.badge = 1;
-          this.addUser({ user, ignoreBadgeCount: false });
-        }
-      });
-    });
   }
 
   private async loadUsers() {

@@ -24,6 +24,7 @@ import { LoginApi } from '@/repositories/LoginApi';
 import { LoginUsecase } from '@/usecases/LoginUsecase';
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import { Mutation } from 'vuex-class';
+import { initApi } from '../repositories/api';
 
 @Component({
   components: {
@@ -42,6 +43,7 @@ export default class Login extends Vue {
 
       if (o.isLoggedIn()) {
         this.loggedIn(o);
+        initApi(o.token);
         this.$router.replace({ name: 'users' });
       }
     } catch (e) {
