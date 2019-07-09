@@ -1,17 +1,26 @@
-import { IMessage, Message } from '@/models/Message';
+import { MessageConverter } from '@/converter/MessageConverter';
+import { Message } from '@/models/Message';
 import { DefineGetters, DefineMutations } from 'vuex-type-helper';
 
+export interface StoreMessage {
+  id: number;
+  body: string;
+  uid: string;
+  createdAt: Date;
+  operatorId?: number;
+}
+
 export interface MessagesState {
-  messages: IMessage[];
+  messages: StoreMessage[];
 }
 
 export interface MessagesGetters {
-  messages: IMessage[];
+  messages: Message[];
 }
 
 export interface MessagesMutations {
   add: {
-    message: IMessage;
+    message: StoreMessage;
   };
   clear: {};
 }
@@ -27,7 +36,7 @@ const state: MessagesState = {
 
 const getters: DefineGetters<MessagesGetters, MessagesState> = {
   messages(s): Message[] {
-    return s.messages.map((m) => Message.from(m));
+    return s.messages.map((m) => MessageConverter.convertMessage(m));
   },
 };
 

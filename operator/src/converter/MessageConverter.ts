@@ -1,14 +1,15 @@
 import { Message } from '@/models/Message';
-import { HistoriesResponse, PostResponse } from '@/repositories/ChatRepository';
+import { User } from '@/models/User';
+import { HistoriesResponse, PostResponse, RawMessage } from '@/repositories/ChatRepository';
+import { StoreMessage } from '@/store/messages';
 
 export class MessageConverter {
 
-  public static convertMessage(response: PostResponse): Message {
-    const row = response.message;
-    const m = new Message(row.body);
-    m.id = row.id;
-    m.createdAt = new Date(row.createdAt);
-    m.operatorId = row.operatorId || null;
+  public static convertMessage(raw: RawMessage): Message {
+    const m = new Message(raw.body);
+    m.id = raw.id;
+    m.createdAt = new Date(raw.createdAt);
+    m.operatorId = raw.operatorId;
     return m;
   }
 
@@ -21,5 +22,4 @@ export class MessageConverter {
       return m;
     });
   }
-
 }

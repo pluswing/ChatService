@@ -22,14 +22,17 @@ import UserStatus from '@/components/user/UserStatus.vue';
 import axios from 'axios';
 import { Component, Vue } from 'vue-property-decorator';
 import { Getter, Mutation, State } from 'vuex-class';
-import { IMessage, Message } from '../models/Message';
-import { IUser, User } from '../models/User';
+import { MessageConverter } from '../converter/MessageConverter';
+import { UserConverter } from '../converter/UserConverter';
+import { Message } from '../models/Message';
+import { User } from '../models/User';
 import { initApi } from '../repositories/api';
-import UserApi from '../repositories/UserApi';
+import { UserApi } from '../repositories/UserApi';
 import socket from '../socket/socket';
-import { OperatorState } from '../store/operator';
-import { UsersState } from '../store/users';
-import GetUsers from '../usecases/GetUsers';
+import { StoreMessage } from '../store/messages';
+import { StoreOperator } from '../store/operator';
+import { StoreUser, UsersState } from '../store/users';
+import { GetUsersUsecase } from '../usecases/GetUsersUsecase';
 
 @Component({
   components: {
@@ -38,14 +41,12 @@ import GetUsers from '../usecases/GetUsers';
   },
 })
 export default class Users extends Vue {
-  @State('operator') public operator!: OperatorState;
+  @State('operator') public operator!: StoreOperator;
 
-  @Mutation('users/add') public addUser!: (payload: { user: IUser, ignoreBadgeCount: boolean }) => void;
+  @Mutation('users/add') public addUser!: (payload: { user: StoreUser, ignoreBadgeCount: boolean }) => void;
   @Getter('users/users') public users!: User[];
 
-  @Mutation('messages/add') public addMessage!: (payload: { message: IMessage }) => void;
-
-  private getusers = new GetUsers(new UserApi());
+  @Mutation('messages/add') public addMessage!: (payload: { message: StoreMessage }) => void;
 
   public async created() {
     initApi(this.operator.token);
@@ -58,10 +59,9 @@ export default class Users extends Vue {
       socket.setOnMessage((event) => {
         const data = JSON.parse(event.data);
         if (data.method === 'post') {
-          const message = Message.from(data);
+          const message = MessageConverter.convertMessage(data);
           this.addMessage({ message });
-
-          const user = new User(data.userId, data.uid, message);
+          const user = UserConverter.convertUser(data, message);
           user.badge = 1;
           this.addUser({ user, ignoreBadgeCount: false });
         }
@@ -70,7 +70,7 @@ export default class Users extends Vue {
   }
 
   private async loadUsers() {
-    const users = await this.getusers.do(this.operator.token);
+    const users = await new GetUsersUsecase(new UserApi()).execute();
     users.forEach((user) => {
       this.addUser({ user, ignoreBadgeCount: true });
     });

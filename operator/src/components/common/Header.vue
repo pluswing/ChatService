@@ -22,7 +22,7 @@
 </template>
 
 <script lang="ts">
-import { OperatorState } from '@/store/operator';
+import { StoreOperator } from '@/store/operator';
 import { Component, Vue } from 'vue-property-decorator';
 import { Mutation, State } from 'vuex-class';
 @Component({
@@ -30,7 +30,7 @@ import { Mutation, State } from 'vuex-class';
   },
 })
 export default class Header extends Vue {
-  @State('operator') public operator!: OperatorState;
+  @State('operator') public operator!: StoreOperator;
   @Mutation('operator/logout') public logout!: () => void;
 
   public doLogout() {

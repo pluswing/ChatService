@@ -1,6 +1,6 @@
 import { DefineGetters, DefineMutations } from 'vuex-type-helper';
 
-export interface OperatorState {
+export interface StoreOperator {
   id: number;
   name: string;
   loginId: string;
@@ -12,12 +12,7 @@ export interface OperatorGetters {
 }
 
 export interface OperatorMutations {
-  loggedIn: {
-    id: number;
-    name: string;
-    loginId: string;
-    token: string;
-  };
+  loggedIn: StoreOperator;
   logout: {};
 }
 
@@ -26,20 +21,20 @@ export interface OperatorActions {
 }
 */
 
-const state: OperatorState = {
+const state: StoreOperator = {
   id: 0,
   name: '',
   loginId: '',
   token: '',
 };
 
-const getters: DefineGetters<OperatorGetters, OperatorState> = {
+const getters: DefineGetters<OperatorGetters, StoreOperator> = {
   isLoggedIn(s): boolean {
     return s.token !== '';
   },
 };
 
-const mutations: DefineMutations<OperatorMutations, OperatorState> = {
+const mutations: DefineMutations<OperatorMutations, StoreOperator> = {
   loggedIn(s, { id, name, loginId, token }) {
     s.id = id;
     s.name = name;

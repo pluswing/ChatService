@@ -2,18 +2,15 @@ import { MessageConverter } from '@/converter/MessageConverter';
 import { Message } from '@/models/Message';
 import { ChatRepository } from '@/repositories/ChatRepository';
 
-export class SendChat {
+export class GetMessagesUsecase {
   private repo: ChatRepository;
 
   constructor(repo: ChatRepository) {
     this.repo = repo;
   }
 
-  public onNewMessage: (message: Message) => void = (m) => {};
-
-  public async post(message: Message) {
-    const res = await this.repo.post(message);
-    const m = MessageConverter.convertMessage(res);
-    this.onNewMessage(m);
+  public async execute(uid: string): Promise<Message[]> {
+    const res = await this.repo.histories({ uid });
+    return MessageConverter.convertMessages(res);
   }
 }

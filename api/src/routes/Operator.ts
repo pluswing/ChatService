@@ -38,7 +38,7 @@ app.use(passport.initialize());
 // unsecure API
 app.post('/authenticate', async (req, res) => {
   // LOGIN token発行
-  const loginId = req.body.loginid;
+  const loginId = req.body.loginId;
   const password = req.body.password;
   try {
     const operator = await opRepo.login(loginId, password);

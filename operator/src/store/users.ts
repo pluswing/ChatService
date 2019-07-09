@@ -1,17 +1,27 @@
-import { IUser, User } from '@/models/User';
+import { MessageConverter } from '@/converter/MessageConverter';
+import { UserConverter } from '@/converter/UserConverter';
+import { User } from '@/models/User';
 import { DefineGetters, DefineMutations } from 'vuex-type-helper';
+import { StoreMessage } from './messages';
+
+export interface StoreUser {
+  id: number;
+  uid: string;
+  message: StoreMessage;
+  badge: number;
+}
 
 export interface UsersState {
-  users: IUser[];
+  users: StoreUser[];
 }
 
 export interface UsersGetters {
-  users: IUser[];
+  users: User[];
 }
 
 export interface UsersMutations {
   add: {
-    user: IUser;
+    user: StoreUser;
     ignoreBadgeCount: boolean;
   };
   clear: {};
@@ -31,7 +41,10 @@ const state: UsersState = {
 
 const getters: DefineGetters<UsersGetters, UsersState> = {
   users(s): User[] {
-    return s.users.map((u) => User.from(u));
+    return s.users.map((u) => {
+      const m = MessageConverter.convertMessage(u.message);
+      return UserConverter.convertUser(u, m);
+    });
   },
 };
 
