@@ -1,4 +1,4 @@
-import { RawMessage } from './ChatRepository';
+import { RawMessage } from './MessageRepository';
 
 export interface UserRepository {
   list(): Promise<UserListResponse>;

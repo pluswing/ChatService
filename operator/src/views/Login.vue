@@ -1,28 +1,24 @@
 <template>
-  <v-content>
-    <Header />
-    <v-layout style="height:100%;" class="grey darken-1">
-      <v-flex xs4 offset-xs4 style="margin-top:100px;">
-        <v-alert :value="message != ''" type="error">{{ message }}</v-alert>
-        <div>
-          <v-text-field v-model="loginid" label="loginID" required single-line solo />
-          <v-text-field
-            v-model="password"
-            label="password"
-            type="password"
-            required
-            single-line
-            solo
-          />
-          <v-btn block color="info" @click="login">LOGIN</v-btn>
-        </div>
-      </v-flex>
-    </v-layout>
-  </v-content>
+  <v-layout style="height:100%;" class="grey darken-1">
+    <v-flex xs4 offset-xs4 style="margin-top:100px;">
+      <v-alert :value="message != ''" type="error">{{ message }}</v-alert>
+      <div>
+        <v-text-field v-model="loginid" label="loginID" required single-line solo />
+        <v-text-field
+          v-model="password"
+          label="password"
+          type="password"
+          required
+          single-line
+          solo
+        />
+        <v-btn block color="info" @click="login">LOGIN</v-btn>
+      </div>
+    </v-flex>
+  </v-layout>
 </template>
 
 <script lang="ts">
-import Header from '@/components/common/Header.vue';
 import { Operator } from '@/models/Operator';
 import { LoginApi } from '@/repositories/LoginApi';
 import { LoginUsecase } from '@/usecases/LoginUsecase';
@@ -31,7 +27,6 @@ import { Mutation } from 'vuex-class';
 
 @Component({
   components: {
-    Header,
   },
 })
 export default class Login extends Vue {

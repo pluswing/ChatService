@@ -1,7 +1,8 @@
 import { Message } from '@/models/Message';
-import { User } from '@/models/User';
-import { HistoriesResponse, PostResponse, RawMessage } from '@/repositories/ChatRepository';
-import { StoreMessage } from '@/store/messages';
+import {
+  HistoriesResponse,
+  RawMessage,
+} from '@/repositories/MessageRepository';
 
 export class MessageConverter {
 

@@ -1,6 +1,7 @@
-export interface ChatRepository {
+export interface MessageRepository {
   post(request: PostRequest): Promise<PostResponse>;
   histories(request: HistoriesRequest): Promise<HistoriesResponse>;
+  activities(): Promise<ActivitiesResponse>;
 }
 
 export interface PostRequest {
@@ -24,5 +25,9 @@ export interface HistoriesRequest {
 }
 
 export interface HistoriesResponse {
+  messages: RawMessage[];
+}
+
+export interface ActivitiesResponse {
   messages: RawMessage[];
 }

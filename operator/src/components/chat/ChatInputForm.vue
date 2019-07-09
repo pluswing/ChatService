@@ -1,10 +1,10 @@
 <template>
   <v-layout
-    style="position:fixed;bottom:0;height:100px;width:100%;background-color:#fafafa;padding-top:20px;"
+    style="position:fixed;bottom:0;height:140px;width:100%;background-color:#fafafa;margin-left:20px; margin-top:20px;padding-top:20px;"
   >
     <v-layout row>
       <v-flex offset-xs2 xs8>
-        <v-textarea v-model="input" v-on:keyup.enter="onClickSend()" solo rows="2" value></v-textarea>
+        <v-textarea v-model="input" v-on:keyup.enter="onClickSend()" solo rows="4" value></v-textarea>
       </v-flex>
     </v-layout>
   </v-layout>

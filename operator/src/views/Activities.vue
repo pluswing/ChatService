@@ -1,23 +1,25 @@
 <template>
-  <v-content>
-    <Header />
-    <v-layout style="padding:10px;">
-      <template v-for="message in messages">
-        <v-list-tile :key="message.id" avatar ripple @click="toggle(index)">
-          <v-list-tile-content>
-            <router-link :to="{ name: 'chat', params: { uid: message.uid }}">
-              <v-list-tile-title>{{ message.uid }}</v-list-tile-title>
-            </router-link>
-            <v-list-tile-sub-title>{{ message.body }}</v-list-tile-sub-title>
-          </v-list-tile-content>
-
-          <v-list-tile-action>
-            <v-list-tile-action-text>{{ message.fromNow() }}</v-list-tile-action-text>
-          </v-list-tile-action>
-        </v-list-tile>
-      </template>
-    </v-layout>
-  </v-content>
+  <v-layout row style="padding:10px;">
+    <v-list>
+      <v-list-tile
+        v-for="message in messages"
+        :key="message.id"
+        avatar
+        ripple
+        @click="toggle(index)"
+      >
+        <v-list-tile-content>
+          <router-link :to="{ name: 'chat', params: { uid: message.uid }}">
+            <v-list-tile-title>{{ message.uid }}</v-list-tile-title>
+          </router-link>
+          <v-list-tile-sub-title>{{ message.body }}</v-list-tile-sub-title>
+        </v-list-tile-content>
+        <v-list-tile-action>
+          <v-list-tile-action-text>{{ message.fromNow() }}</v-list-tile-action-text>
+        </v-list-tile-action>
+      </v-list-tile>
+    </v-list>
+  </v-layout>
 </template>
 
 <script lang="ts">
@@ -31,18 +33,19 @@ import { UserConverter } from '../converter/UserConverter';
 import { Message } from '../models/Message';
 import { User } from '../models/User';
 import { initApi } from '../repositories/api';
+import { MessageApi } from '../repositories/MessageApi';
 import { UserApi } from '../repositories/UserApi';
 import socket from '../socket/socket';
 import { StoreMessage } from '../store/messages';
 import { StoreOperator } from '../store/operator';
 import { StoreUser, UsersState } from '../store/users';
+import { ActivitiesUsecase } from '../usecases/ActivitiesUsecase';
 import { GetUsersUsecase } from '../usecases/GetUsersUsecase';
 
 @Component({
   components: {
     UserStatus,
     Activities,
-    Header,
   },
 })
 export default class Activities extends Vue {
@@ -52,11 +55,13 @@ export default class Activities extends Vue {
   @Mutation('messages/add') public addMessage!: (payload: { message: StoreMessage }) => void;
   @Getter('messages/messages') public messages!: Message[];
 
-  private getusers = new GetUsersUsecase(new UserApi());
-
   public async created() {
     initApi(this.operator.token);
     this.initSocket();
+    const messages = await new ActivitiesUsecase(new MessageApi()).execute();
+    messages.forEach((m) => {
+      this.addMessage({ message: m });
+    });
   }
 
   private initSocket() {

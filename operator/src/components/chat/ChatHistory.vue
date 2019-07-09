@@ -1,5 +1,8 @@
 <template>
-  <v-container id="messages" style="height:100vh;overflow-y:scroll;">
+  <v-container
+    id="messages"
+    style="height:100vh;overflow-y:scroll;margin-top:-48px;margin-bottom:0;padding-top:60px;"
+  >
     <v-layout v-for="message in messages" :key="message.id">
       <ChatMessage :message="message" />
     </v-layout>

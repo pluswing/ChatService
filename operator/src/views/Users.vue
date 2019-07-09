@@ -1,19 +1,9 @@
 <template>
-  <v-content>
-    <Header />
-    <v-layout style="padding:10px;">
-      <v-flex xs9>
-        <v-layout wrap>
-          <v-flex xs6 v-for="user in users" :key="user.id">
-            <UserStatus style="margin:10px;" :user="user" />
-          </v-flex>
-        </v-layout>
-      </v-flex>
-      <v-flex xs3>
-        <Activities style="margin:10px;" :messages="messages" />
-      </v-flex>
-    </v-layout>
-  </v-content>
+  <v-layout style="padding:10px;">
+    <v-flex xs6 v-for="user in users" :key="user.id">
+      <UserStatus style="margin:10px;" :user="user" />
+    </v-flex>
+  </v-layout>
 </template>
 
 <script lang="ts">

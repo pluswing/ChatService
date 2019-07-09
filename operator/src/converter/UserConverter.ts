@@ -1,7 +1,6 @@
 import { Message } from '@/models/Message';
 import { User } from '@/models/User';
 import { RawUser, UserListResponse } from '@/repositories/UserRepository';
-import { StoreUser } from '@/store/users';
 import { MessageConverter } from './MessageConverter';
 
 export class UserConverter {

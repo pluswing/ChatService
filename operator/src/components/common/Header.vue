@@ -1,6 +1,6 @@
 <template>
-  <v-toolbar dark color="primary">
-    <v-toolbar-side-icon></v-toolbar-side-icon>
+  <v-toolbar dark color="primary" style="z-index:1;">
+    <v-toolbar-side-icon @click="sideClick"></v-toolbar-side-icon>
 
     <v-toolbar-title class="white--text">ChatService</v-toolbar-title>
 
@@ -23,7 +23,7 @@
 
 <script lang="ts">
 import { StoreOperator } from '@/store/operator';
-import { Component, Vue } from 'vue-property-decorator';
+import { Component, Emit, Vue } from 'vue-property-decorator';
 import { Mutation, State } from 'vuex-class';
 @Component({
   components: {
@@ -32,6 +32,13 @@ import { Mutation, State } from 'vuex-class';
 export default class Header extends Vue {
   @State('operator') public operator!: StoreOperator;
   @Mutation('operator/logout') public logout!: () => void;
+
+  @Emit() public side() { }
+
+
+  public sideClick() {
+    this.side();
+  }
 
   public doLogout() {
     this.logout();

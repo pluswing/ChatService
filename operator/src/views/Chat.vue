@@ -1,10 +1,8 @@
 <template>
-  <v-content>
-    <Header />
-    <div class="headline" style="text-align:left;margin:10px;">{{ uid }}'s Messages</div>
+  <v-layout style="padding:10;px;">
     <ChatHistory :messages="messages" />
     <ChatInputForm @send="send" />
-  </v-content>
+  </v-layout>
 </template>
 
 <script lang="ts">
@@ -12,8 +10,8 @@ import ChatHistory from '@/components/chat/ChatHistory.vue';
 import ChatInputForm from '@/components/chat/ChatInputForm.vue';
 import Header from '@/components/common/Header.vue';
 import { Message } from '@/models/Message';
-import { ChatApi } from '@/repositories/ChatApi';
-import { GetMessagesUsecase } from '@/usecases/GetMessagesUsecase';
+import { MessageApi } from '@/repositories/MessageApi';
+import { MessageHistoriesUsecase } from '@/usecases/MessageHistoriesUsecase';
 import { Component, Vue } from 'vue-property-decorator';
 import { Mutation, State } from 'vuex-class';
 import { MessageConverter } from '../converter/MessageConverter';
@@ -24,7 +22,7 @@ import socket from '../socket/socket';
 import { StoreMessage } from '../store/messages';
 import { StoreOperator } from '../store/operator';
 import { StoreUser } from '../store/users';
-import { SendChatUsecase } from '../usecases/SendChatUsecase';
+import { SendMessageUsecase } from '../usecases/SendMessageUsecase';
 
 @Component({
   components: {
@@ -41,7 +39,7 @@ export default class Chat extends Vue {
 
   public messages: Message[] = [];
   private uid: string = '';
-  private sendChat = new SendChatUsecase(new ChatApi());
+  private sendChat = new SendMessageUsecase(new MessageApi());
 
   public async created() {
     initApi(this.operator.token);
@@ -61,7 +59,7 @@ export default class Chat extends Vue {
   }
 
   private async loadMessages() {
-    this.messages = await new GetMessagesUsecase(new ChatApi()).execute(this.uid);
+    this.messages = await new MessageHistoriesUsecase(new MessageApi()).execute(this.uid);
     this.sendChat.onNewMessage = (m: Message) => {
       this.messages.push(m);
     };

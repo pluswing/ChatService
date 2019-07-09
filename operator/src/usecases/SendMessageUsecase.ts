@@ -1,11 +1,11 @@
 import { MessageConverter } from '@/converter/MessageConverter';
 import { Message } from '@/models/Message';
-import { ChatRepository } from '@/repositories/ChatRepository';
+import { MessageRepository } from '@/repositories/MessageRepository';
 
-export class SendChatUsecase {
-  private repo: ChatRepository;
+export class SendMessageUsecase {
+  private repo: MessageRepository;
 
-  constructor(repo: ChatRepository) {
+  constructor(repo: MessageRepository) {
     this.repo = repo;
   }
 

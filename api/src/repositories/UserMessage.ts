@@ -43,6 +43,18 @@ class UserMessageMemory implements UserMessageRepository {
 }
 
 export class UserMessageDAO implements UserMessageRepository {
+  public async activities(): Promise<UserMessage[]> {
+    const query = 'SELECT * FROM user_messages ORDER BY id DESC LIMIT 100';
+    const rows = await select(query, []);
+    return rows.map((r) => {
+      const m = new UserMessage(r.user_id, r.body);
+      m.id = r.id;
+      m.createdAt = r.created_at;
+      m.operatorId = r.operator_id;
+      return m;
+    });
+  }
+
   public async histories(user: User): Promise<UserMessage[]> {
     const query = 'SELECT * FROM user_messages WHERE user_id = ? ORDER BY id';
     const rows = await select(query, [user.id]);
