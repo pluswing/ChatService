@@ -34,10 +34,14 @@ export default class App extends Vue {
 
   private showSide = false;
 
+  public created() {
+    this.changeOperator();
+  }
+
   @Watch('operator.token')
   public changeOperator() {
+    initApi(this.operator.token, (error) => alert(error));
     if (this.operator.token) {
-      initApi(this.operator.token);
       this.initSocket();
     }
   }

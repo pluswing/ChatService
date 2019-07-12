@@ -7,15 +7,18 @@
     </v-badge>
 
     <v-card-title style="text-align:left;" class="pt-0 pb-0">
-      <span class="subheading font-weight-light">{{ user.uid }}</span>
+      <span class="body-1 font-weight-light" style="color:grey;">{{ user.uid }}</span>
     </v-card-title>
 
-    <v-card-text style="text-align:left;" class="headline pb-0 pt-1">{{ user.message.body }}</v-card-text>
+    <v-card-text
+      style="text-align:left;"
+      class="subheading font-weight-light pb-0 pt-1"
+    >{{ user.message.body }}</v-card-text>
 
     <v-card-actions class="pb-0 pt-0">
       <v-list-tile class="grow">
         <v-layout align-center justify-end>
-          <span class="subheading">{{ user.message.date() }}</span>
+          <span class="body-1" style="color:grey;">{{ user.message.date() }}</span>
         </v-layout>
       </v-list-tile>
     </v-card-actions>

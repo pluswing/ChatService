@@ -6,7 +6,7 @@ services:
     links:
       - mysql
     ports:
-      - "${API_PORT}:3000"
+      - "${API_PORT}:3010"
     environment:
       - DB_HOST
       - DB_USER
@@ -27,7 +27,7 @@ services:
         API_ENDPOINT_WS: $API_ENDPOINT_WS
     tty: true
     ports:
-      - "3011:3001"
+      - "3011:3011"
     environment:
       - API_ENDPOINT
       - API_ENDPOINT_WS
@@ -35,7 +35,7 @@ services:
     build: ./operator
     tty: true
     ports:
-      - "3012:3002"
+      - "3012:3012"
     environment:
       VUE_APP_API_ENDPOINT: $API_ENDPOINT
   mysql:

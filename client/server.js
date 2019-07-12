@@ -8,7 +8,7 @@ app.get("/api/photo/list", function(req, res, next){
     res.json(photoList);
 });
 */
-const server = app.listen(3001, function(){
+const server = app.listen(3011, function(){
   console.log("Node.js is listening to PORT:" + server.address().port);
 });
 

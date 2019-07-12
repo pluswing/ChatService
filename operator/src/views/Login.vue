@@ -43,7 +43,6 @@ export default class Login extends Vue {
 
       if (o.isLoggedIn()) {
         this.loggedIn(o);
-        initApi(o.token);
         this.$router.replace({ name: 'users' });
       }
     } catch (e) {

@@ -36,7 +36,7 @@ export default class Chat extends Vue {
     this.connection.onopen = () => {
       this.connection.send(
         JSON.stringify({
-          method: 'register',
+          method: 'histories',
           uid: this.uid,
         }),
       );
@@ -51,19 +51,16 @@ export default class Chat extends Vue {
         message.createdAt = data.createdAt;
         this.messages.push(message);
       }
+      if (data.method === 'histories') {
+        data.histories.forEach((um: any) => {
+          const mm = new Message(um.body);
+          mm.id = um.id;
+          mm.operatorId = um.operatorId;
+          mm.createdAt = new Date(um.createdAt);
+          this.messages.push(mm);
+        });
+      }
     };
-
-    // load histories
-    const res = await axios.post(`${API_ENDPOINT}/v1/chat/histories`, {
-      uid: this.uid,
-    });
-    res.data.forEach((um: any) => {
-      const mm = new Message(um.body);
-      mm.id = um.id;
-      mm.operatorId = um.operatorId;
-      mm.createdAt = new Date(um.createdAt);
-      this.messages.push(mm);
-    });
   }
 
   public beforeDestroy() {

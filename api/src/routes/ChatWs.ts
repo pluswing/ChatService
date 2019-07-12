@@ -29,21 +29,17 @@ const bind = (path: string, originalApp: Express.Application) => {
 
   app.ws(path, (ws, req) => {
     ws.on('message', async (msg) => {
-      console.log(msg);
 
       const m = JSON.parse(msg.toString());
-
+      console.log(m);
       if (m.method === 'register') {
-        // 登録処理
+        // 登録処理 (オペレータのみ)
         if (m.isOperator) {
           const decoded: any = jwt.verify(m.token, process.env.SECRET || '');
           const operator = await operatorDao.find(decoded.sub);
           if (operator != null) {
             sockets.addOperatorSocket(operator, ws);
           }
-        } else {
-          const u = await userDao.findOrCreate(m.uid);
-          sockets.addUserSocket(u, ws);
         }
         ws.send(msg);
       }
@@ -63,8 +59,8 @@ const bind = (path: string, originalApp: Express.Application) => {
 
       if (m.method === 'post') {
         const u = await userDao.findOrCreate(m.uid);
+        sockets.addUserSocket(u, ws);
         const um = new UserMessage(u.id, m.message);
-        console.log(um);
         await userMessageDao.add(um);
         const resp = JSON.stringify({
           method: 'post',
@@ -76,6 +72,27 @@ const bind = (path: string, originalApp: Express.Application) => {
         });
         sockets.sendUser(u, resp);
         sockets.broadcastOperators(resp);
+      }
+
+      if (m.method === 'histories') {
+        const u = await userDao.find(m.uid);
+        // ユーザが登録されていなければ、空を返す。
+        //  -> ユーザが登録されるタイミングは、初回メッセージ送信時。
+        if (!u) {
+          console.log('user not found!');
+          ws.send(JSON.stringify({
+            method: 'histories',
+            histories: [],
+          }));
+          return;
+        }
+
+        sockets.addUserSocket(u, ws);
+        const histories = await userMessageDao.histories(u);
+        sockets.sendUser(u, JSON.stringify({
+          method: 'histories',
+          histories,
+        }));
       }
     });
   });

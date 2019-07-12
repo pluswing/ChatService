@@ -16,7 +16,9 @@ class Socket {
       );
       done();
     };
-    this.connection.onmessage = this.onMessage;
+    this.connection.onmessage = (event) => {
+      this.onMessage(event);
+    };
   }
 
   public setOnMessage(listener: (event: MessageEvent) => void) {

@@ -1,15 +1,15 @@
 <template>
   <v-card @click="clickCard">
-    <v-card-title style="text-align:left;" class="pt-0 pb-0">
-      <span class="subheading font-weight-light">{{ message.uid }}</span>
+    <v-card-title style="text-align:left;" class="pb-0">
+      <span class="caption font-weight-light" style="color:grey;">{{ message.uid }}</span>
     </v-card-title>
 
-    <v-card-text style="text-align:left;" class="headline pb-0 pt-1">{{ message.body }}</v-card-text>
+    <v-card-text style="text-align:left;" class="subheading pb-0 pt-1">{{ message.body }}</v-card-text>
 
     <v-card-actions class="pb-0 pt-0">
       <v-list-tile class="grow">
         <v-layout align-center justify-end>
-          <span class="subheading">{{ message.fromNow() }}</span>
+          <span class="caption" style="color:grey;">{{ message.fromNow() }}</span>
         </v-layout>
       </v-list-tile>
     </v-card-actions>

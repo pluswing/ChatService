@@ -1,5 +1,5 @@
 <template>
-  <v-layout style="padding:10;px;">
+  <v-layout style="padding:10;px;overflow-y:hidden;">
     <ChatHistory :messages="messages" />
     <ChatInputForm @send="send" />
   </v-layout>
@@ -35,7 +35,6 @@ export default class Chat extends Vue {
 
   public messages: Message[] = [];
   private uid: string = '';
-  private sendChat = new SendMessageUsecase(new MessageApi());
 
   public async created() {
     this.uid = this.$route.params.uid;
@@ -50,7 +49,7 @@ export default class Chat extends Vue {
   public async send(input: string) {
     const m = new Message(input);
     m.uid = this.$route.params.uid;
-    await this.sendChat.execute(m);
+    await new SendMessageUsecase(new MessageApi()).execute(m);
   }
 
   public destroyed() {
@@ -59,16 +58,16 @@ export default class Chat extends Vue {
 
   private async loadMessages() {
     this.messages = await new MessageHistoriesUsecase(new MessageApi()).execute(this.uid);
-    this.sendChat.onNewMessage = (m: Message) => {
-      this.messages.push(m);
-    };
   }
 
   private initSocket() {
     socket.setOnMessageCustom((event) => {
-      const message = MessageConverter.convertMessage(event.data);
-      if (this.uid === message.uid) {
-        this.messages.push(message);
+      const data = JSON.parse(event.data);
+      if (data.method === 'post') {
+        const message = MessageConverter.convertMessage(data);
+        if (this.uid === message.uid) {
+          this.messages.push(message);
+        }
       }
     });
   }

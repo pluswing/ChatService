@@ -9,6 +9,7 @@ export class User {
 }
 
 export interface UserRepository {
+  find(uid: string): Promise<User|null>;
   findOrCreate(uid: string): Promise<User>;
   list(): Promise<User[]>;
 }
@@ -16,32 +17,46 @@ export interface UserRepository {
 class UserMemory implements UserRepository {
   private users: { [key: string]: User } = {};
 
-  public async findOrCreate(uid: string): Promise<User> {
+  public async find(uid: string): Promise<User|null> {
     if (this.users[uid]) {
       return this.users[uid];
     }
-    const u = new User(uid);
-    u.id = Object.keys(this.users).length + 1;
-    this.users[uid] = u;
-    return u;
+    return null;
   }
+
+  public async findOrCreate(uid: string): Promise<User> {
+    const u = await this.find(uid);
+    if (u) { return u; }
+    const newUser = new User(uid);
+    newUser.id = Object.keys(this.users).length + 1;
+    this.users[uid] = newUser;
+    return newUser;
+  }
+
   public async list(): Promise<User[]> {
     return Object.values(this.users);
   }
 }
 
 export class UserDAO implements UserRepository {
-  public async findOrCreate(uid: string): Promise<User> {
+  public async find(uid: string): Promise<User|null> {
     const selectQuery = 'SELECT * FROM users WHERE uid = ?';
-    let rows = await select(selectQuery, [uid]);
+    const rows = await select(selectQuery, [uid]);
     if (rows.length === 0) {
-      await insert('users', { uid });
-      rows = await select(selectQuery, [uid]);
+      return null;
     }
     const u = new User(rows[0].uid);
     u.id = rows[0].id;
     return u;
   }
+
+  public async findOrCreate(uid: string): Promise<User> {
+    const u = await this.find(uid);
+    if (u) { return u; }
+    await insert('users', { uid });
+    return await this.find(uid) as User;
+  }
+
   public async list(): Promise<User[]> {
     const query = 'SELECT * FROM users ORDER BY id';
     const rows = await select(query, []);

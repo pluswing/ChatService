@@ -66,9 +66,11 @@ app.post('/users', async (req, res) => {
   for (const user of users) {
     const row: { [key: string]: any } = {};
     row.user = user;
+    console.log(user);
     row.message = await mrepo.latestMessage(user);
     data.push(row);
   }
+  console.log('users res');
   res.json({ data });
 });
 
@@ -105,6 +107,7 @@ app.post('/send', async (req, res) => {
     uid: user.uid,
   });
   sockets.sendUser(user, resp);
+  sockets.broadcastOperators(resp);
   return res.json({ message: um });
 });
 

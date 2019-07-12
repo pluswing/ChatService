@@ -1,10 +1,13 @@
 <template>
   <v-layout
-    style="position:fixed;bottom:0;height:140px;width:100%;background-color:#fafafa;margin-left:20px; margin-top:20px;padding-top:20px;"
+    style="position:absolute;bottom:0;width:100%;background-color:#fafafa;margin-left:10px; margin-top:20px;padding-top:20px;margin-right:20px;"
   >
-    <v-layout row>
+    <v-layout row style="margin-right:20px;">
       <v-flex offset-xs2 xs8>
-        <v-textarea v-model="input" v-on:keyup.enter="onClickSend()" solo rows="4" value></v-textarea>
+        <v-layout row align-end>
+          <v-textarea v-model="input" solo rows="4" value></v-textarea>
+          <v-btn style="margin-bottom:30px;" color="info" @click="onClickSend">SEND</v-btn>
+        </v-layout>
       </v-flex>
     </v-layout>
   </v-layout>

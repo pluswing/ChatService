@@ -1,7 +1,6 @@
 import * as BodyParser from 'body-parser';
 import * as Express from 'express';
 
-import Chat from './routes/Chat';
 import ChatWs from './routes/ChatWs';
 import Operator from './routes/Operator';
 
@@ -26,12 +25,11 @@ app.options('*', (req, res) => {
   res.sendStatus(200);
 });
 
-app.use('/v1/chat/', Chat);
 ChatWs.bind('/v1/chat/ws/', app);
 app.use('/v1/operator', Operator);
 
-app.listen(3000, () => {
-  console.log('Example app listening on port 3000!');
+app.listen(3010, () => {
+  console.log('Example app listening on port 3010!');
 });
 
 export default app;

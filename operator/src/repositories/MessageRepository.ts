@@ -18,6 +18,7 @@ export interface RawMessage {
   body: string;
   createdAt: Date;
   operatorId?: number;
+  uid: string;
 }
 
 export interface HistoriesRequest {

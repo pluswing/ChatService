@@ -11,6 +11,7 @@ export class MessageConverter {
     m.id = raw.id;
     m.createdAt = new Date(raw.createdAt);
     m.operatorId = raw.operatorId;
+    m.uid = raw.uid;
     return m;
   }
 
@@ -20,6 +21,7 @@ export class MessageConverter {
       m.id = row.id;
       m.createdAt = row.createdAt;
       m.operatorId = row.operatorId;
+      m.uid = row.uid;
       return m;
     });
   }
