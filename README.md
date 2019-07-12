@@ -26,7 +26,7 @@ http://localhost:3011
 http://localhost:3012
 
 オペレータのデフォルトログイン情報:  
-LoginID: admin, Password: admin 
+LoginID: admin, Password: password 
 
 変更する場合、 `docker-compose run api npm run setup`  
 を実行する前に、  
