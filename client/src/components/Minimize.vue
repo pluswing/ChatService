@@ -3,12 +3,11 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue, Emit } from 'vue-property-decorator';
+import { Component, Emit, Prop, Vue } from 'vue-property-decorator';
 
 @Component
 export default class Minimize extends Vue {
   @Prop() private title!: string;
-
   @Emit() public clicked() { }
 
   public onClick() {

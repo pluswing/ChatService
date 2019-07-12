@@ -1,16 +1,19 @@
 <template>
-  <v-container id="messages" style="height:100vh;overflow-y:scroll;">
-    <v-layout v-for="message in messages" :key="message.id">
-      <ChatMessage :message="message"/>
-    </v-layout>
-    <div style="height:100px;"/>
+  <v-container
+    id="messages"
+    style="height:100vh;overflow-y:scroll;margin-top:-48px;margin-bottom:-130px;padding-top:60px;"
+  >
+    <template v-for="message in messages">
+      <ChatMessage :message="message" :key="message.id" />
+    </template>
+    <div style="height:130px;" />
   </v-container>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
 import ChatMessage from '@/components/chat/ChatMessage.vue';
 import { Message } from '@/models/Message';
+import { Component, Prop, Vue } from 'vue-property-decorator';
 
 @Component({
   components: {

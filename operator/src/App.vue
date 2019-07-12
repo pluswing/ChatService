@@ -1,19 +1,73 @@
 <template>
   <v-app>
     <v-content>
-      <router-view/>
+      <Header @side="sideClick" />
+      <Sidebar :show="showSide" @close="closeSide" />
+      <router-view />
     </v-content>
   </v-app>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import Header from '@/components/common/Header.vue';
+import Sidebar from '@/components/common/Sidebar.vue';
+import { Component, Vue, Watch } from 'vue-property-decorator';
+import { Getter, Mutation, State } from 'vuex-class';
+import { MessageConverter } from './converter/MessageConverter';
+import { UserConverter } from './converter/UserConverter';
+import { User } from './models/User';
+import { initApi } from './repositories/api';
+import socket from './socket/socket';
+import { StoreOperator } from './store/operator';
+import { StoreUser } from './store/users';
 
 @Component({
   components: {
+    Header,
+    Sidebar,
   },
 })
 export default class App extends Vue {
+  @State('operator') public operator!: StoreOperator;
+  @Mutation('users/add') public addUser!: (payload: { user: StoreUser, ignoreBadgeCount: boolean }) => void;
+  @Getter('users/users') public users!: User[];
+
+  private showSide = false;
+
+  public created() {
+    this.changeOperator();
+  }
+
+  @Watch('operator.token')
+  public changeOperator() {
+    initApi(this.operator.token, (error) => alert(error));
+    if (this.operator.token) {
+      this.initSocket();
+    }
+  }
+
+  public sideClick() {
+    this.showSide = !this.showSide;
+  }
+
+  public closeSide() {
+    this.showSide = false;
+  }
+
+  private initSocket() {
+    socket.connect(this.operator.token, () => {
+      socket.setOnMessage((event) => {
+        const data = JSON.parse(event.data);
+        if (data.method === 'post') {
+          const message = MessageConverter.convertMessage(data);
+          const user = UserConverter.convertUser(data, message);
+          user.badge = 1;
+          this.addUser({ user, ignoreBadgeCount: false });
+        }
+      });
+    });
+  }
+
 }
 </script>
 

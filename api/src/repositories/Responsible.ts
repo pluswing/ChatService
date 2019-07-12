@@ -1,43 +1,42 @@
-import { User } from './User';
 import { Operator } from './Operator';
+import { User } from './User';
 
 export class Responsible {
-    userId: number;
-    operatorId: number;
+  public userId: number;
+  public operatorId: number;
 
-    constructor(user: User, operator: Operator) {
-        this.userId = user.id;
-        this.operatorId = operator.id;
-    }
+  constructor(user: User, operator: Operator) {
+    this.userId = user.id;
+    this.operatorId = operator.id;
+  }
 }
 
 export interface ResponsibleRepository {
-    associate(responsible: Responsible): void;
-    findByOperator(operator: Operator): Responsible[];
+  associate(responsible: Responsible): void;
+  findByOperator(operator: Operator): Responsible[];
 }
 
 class ResponsibleMemory implements ResponsibleRepository {
-    private responsibles: {[key: number]: Responsible[]} = {};
+  private responsibles: { [key: number]: Responsible[] } = {};
 
-    associate(responsible: Responsible): void {
+  public associate(responsible: Responsible): void {
+    // remove userId
+    Object.keys(this.responsibles).forEach((operatorId) => {
+      const id = parseInt(operatorId, 10);
+      this.responsibles[id] = this.responsibles[id].filter((r) => {
+        return r.userId !== responsible.userId;
+      });
+    });
 
-        // remove userId
-        Object.keys(this.responsibles).forEach((operatorId) => {
-            const id = parseInt(operatorId, 10);
-            this.responsibles[id] = this.responsibles[id].filter((r) => {
-                return r.userId !== responsible.userId;
-            });
-        });
-
-        if (!this.responsibles[responsible.operatorId]) {
-            this.responsibles[responsible.operatorId] = [];
-        }
-        this.responsibles[responsible.operatorId].push(responsible);
+    if (!this.responsibles[responsible.operatorId]) {
+      this.responsibles[responsible.operatorId] = [];
     }
+    this.responsibles[responsible.operatorId].push(responsible);
+  }
 
-    findByOperator(operator: Operator): Responsible[] {
-        return this.responsibles[operator.id] || [];
-    }
+  public findByOperator(operator: Operator): Responsible[] {
+    return this.responsibles[operator.id] || [];
+  }
 }
 
-export const responsibles : ResponsibleRepository = new ResponsibleMemory();
+export const responsibles: ResponsibleRepository = new ResponsibleMemory();

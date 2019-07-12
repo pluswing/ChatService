@@ -2,18 +2,17 @@
   <div class="header">
     {{title}}
     <span class="right">
-      <img src="../img/close.png" @click="onClickClose">
+      <img src="../img/close.png" @click="onClickClose" />
     </span>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Emit, Vue } from 'vue-property-decorator';
+import { Component, Emit, Prop, Vue } from 'vue-property-decorator';
 
 @Component
 export default class Header extends Vue {
   @Prop() private title!: string;
-
   @Emit() public close() { }
 
   public onClickClose() {

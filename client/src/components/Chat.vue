@@ -1,27 +1,27 @@
 <template>
   <div class="chat_container">
-    <Header title="チャット" @close="onClickClose"/>
-    <ChatHistory :messages="messages"/>
-    <ChatInputForm @send="send"/>
+    <Header title="チャット" @close="onClickClose" />
+    <ChatHistory :messages="messages" />
+    <ChatInputForm @send="send" />
   </div>
 </template>
 
 <script lang="ts">
+import axios from 'axios';
 import { Component, Emit, Prop, Vue } from 'vue-property-decorator';
-import Header from './Header.vue';
+import { Message } from '../models/Message';
 import ChatHistory from './ChatHistory.vue';
 import ChatInputForm from './ChatInputForm.vue';
-import { Message } from '../models/Message';
-import axios from 'axios';
+import Header from './Header.vue';
 
 const API_ENDPOINT = process.env.API_ENDPOINT;
 const API_ENDPOINT_WS = process.env.API_ENDPOINT_WS;
 
 @Component({
   components: {
-    Header,
     ChatHistory,
     ChatInputForm,
+    Header,
   },
 })
 export default class Chat extends Vue {
@@ -30,19 +30,19 @@ export default class Chat extends Vue {
   @Prop() private uid!: string;
 
   private connection = new WebSocket(`${API_ENDPOINT_WS}/v1/chat/ws/`);
+  @Emit() public close() { }
 
   public async created() {
     this.connection.onopen = () => {
       this.connection.send(
         JSON.stringify({
-          method: 'register',
+          method: 'histories',
           uid: this.uid,
         }),
       );
     };
 
     this.connection.onmessage = (event) => {
-      console.log(event.data);
       const data = JSON.parse(event.data);
       if (data.method === 'post') {
         const message = new Message(data.body);
@@ -51,19 +51,16 @@ export default class Chat extends Vue {
         message.createdAt = data.createdAt;
         this.messages.push(message);
       }
+      if (data.method === 'histories') {
+        data.histories.forEach((um: any) => {
+          const mm = new Message(um.body);
+          mm.id = um.id;
+          mm.operatorId = um.operatorId;
+          mm.createdAt = new Date(um.createdAt);
+          this.messages.push(mm);
+        });
+      }
     };
-
-    // load histories
-    const res = await axios.post(`${API_ENDPOINT}/v1/chat/histories`, {
-      uid: this.uid,
-    });
-    res.data.forEach((um: any) => {
-      const mm = new Message(um.body);
-      mm.id = um.id;
-      mm.operatorId = um.operatorId;
-      mm.createdAt = new Date(um.createdAt);
-      this.messages.push(mm);
-    });
   }
 
   public beforeDestroy() {
@@ -75,8 +72,6 @@ export default class Chat extends Vue {
     );
   }
 
-  @Emit() public close() { }
-
   public onClickClose() {
     this.close();
   }
@@ -84,8 +79,8 @@ export default class Chat extends Vue {
   public async send(input: string) {
     this.connection.send(
       JSON.stringify({
-        method: 'post',
         message: input,
+        method: 'post',
         uid: this.uid,
       }),
     );

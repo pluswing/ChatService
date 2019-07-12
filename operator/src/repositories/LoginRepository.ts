@@ -1,5 +1,18 @@
-import { Operator } from '@/models/Operator';
-
 export interface LoginRepository {
-    login(operator: Operator): Promise<Operator>;
+  login(request: LoginRequest): Promise<LoginResponse>;
+}
+
+export interface LoginRequest {
+  loginId: string;
+  password: string;
+}
+
+export interface LoginResponse {
+  token: string;
+  operator: RawOperator;
+}
+
+export interface RawOperator {
+  id: number;
+  name: string;
 }

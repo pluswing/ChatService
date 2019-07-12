@@ -1,32 +1,35 @@
 <template>
-  <v-content>
-    <Header/>
-    <div class="headline" style="text-align:left;margin:10px;">Login</div>
-    <v-layout>
-      <v-flex xs6 offset-xs3>
-        <v-alert :value="message != ''" type="error">{{ message }}</v-alert>
-        <div>
-          <v-text-field v-model="loginid" label="loginID" required></v-text-field>
-          <br>
-          <v-text-field v-model="password" label="password" type="password" required></v-text-field>
-          <br>
-          <v-btn color="info" @click="login">LOGIN</v-btn>
-        </div>
-      </v-flex>
-    </v-layout>
-  </v-content>
+  <v-layout style="height:100%;" class="grey darken-1">
+    <v-flex xs4 offset-xs4 style="margin-top:100px;">
+      <v-alert :value="message != ''" type="error">{{ message }}</v-alert>
+      <div>
+        <v-text-field v-model="loginid" label="loginID" required single-line solo />
+        <v-text-field
+          v-model="password"
+          label="password"
+          type="password"
+          required
+          single-line
+          solo
+        />
+        <v-btn block color="info" @click="login">LOGIN</v-btn>
+      </div>
+    </v-flex>
+  </v-layout>
 </template>
 
 <script lang="ts">
+import { Operator } from '@/models/Operator';
+import { LoginApi } from '@/repositories/LoginApi';
+import { LoginUsecase } from '@/usecases/LoginUsecase';
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import { Mutation } from 'vuex-class';
-import { Operator } from '@/models/Operator';
-import { Login as LoginUsecase } from '@/usecases/Login';
-import { LoginApi } from '@/repositories/LoginApi';
+import { initApi } from '../repositories/api';
 
-const loginUsecase = new LoginUsecase(new LoginApi());
-
-@Component
+@Component({
+  components: {
+  },
+})
 export default class Login extends Vue {
   @Mutation('operator/loggedIn') public loggedIn!: (payload: any) => void;
   private message = '';
@@ -36,11 +39,11 @@ export default class Login extends Vue {
   public async login() {
     const o = new Operator(this.loginid, this.password);
     try {
-      await loginUsecase.login(o);
+      await new LoginUsecase(new LoginApi()).execute(o);
 
       if (o.isLoggedIn()) {
         this.loggedIn(o);
-        this.$router.replace({ name: 'user' });
+        this.$router.replace({ name: 'users' });
       }
     } catch (e) {
       this.message = 'failed logged in.';

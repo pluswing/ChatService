@@ -1,27 +1,27 @@
 <template>
-  <v-content>
-    <Header/>
-    <div class="headline" style="text-align:left;margin:10px;">{{ uid }}'s Messages</div>
-    <ChatHistory :messages="messages"/>
-    <ChatInputForm @send="send"/>
-  </v-content>
+  <v-layout style="padding:10;px;overflow-y:hidden;">
+    <ChatHistory :messages="messages" />
+    <ChatInputForm @send="send" />
+  </v-layout>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
 import ChatHistory from '@/components/chat/ChatHistory.vue';
 import ChatInputForm from '@/components/chat/ChatInputForm.vue';
 import Header from '@/components/common/Header.vue';
-import { Message, IMessage } from '@/models/Message';
-import { SendChat } from '@/usecases/SendChat';
-import { ChatApi } from '@/repositories/ChatApi';
-import { State, Mutation } from 'vuex-class';
-import { OperatorState } from '../store/operator';
-import GetMessages from '@/usecases/GetMessages';
+import { Message } from '@/models/Message';
+import { MessageApi } from '@/repositories/MessageApi';
+import { MessageHistoriesUsecase } from '@/usecases/MessageHistoriesUsecase';
+import { Component, Vue } from 'vue-property-decorator';
+import { Mutation, State } from 'vuex-class';
+import { MessageConverter } from '../converter/MessageConverter';
+import { UserConverter } from '../converter/UserConverter';
+import { User } from '../models/User';
+import { initApi } from '../repositories/api';
 import socket from '../socket/socket';
-import { User, IUser } from '../models/User';
-
-const sendChat = new SendChat(new ChatApi());
+import { StoreOperator } from '../store/operator';
+import { StoreUser } from '../store/users';
+import { SendMessageUsecase } from '../usecases/SendMessageUsecase';
 
 @Component({
   components: {
@@ -31,13 +31,9 @@ const sendChat = new SendChat(new ChatApi());
   },
 })
 export default class Chat extends Vue {
-  @State('operator') public operator!: OperatorState;
-  @Mutation('users/add') public addUser!: (payload: { user: IUser, ignoreBadgeCount: boolean }) => void;
-  @Mutation('messages/add') public addMessage!: (payload: { message: IMessage }) => void;
   @Mutation('users/clearBadge') public clearBadge!: (payload: { uid: string }) => void;
 
   public messages: Message[] = [];
-  public getmessages = new GetMessages(new ChatApi());
   private uid: string = '';
 
   public async created() {
@@ -53,35 +49,28 @@ export default class Chat extends Vue {
   public async send(input: string) {
     const m = new Message(input);
     m.uid = this.$route.params.uid;
-    await sendChat.post(m, this.operator.token);
+    await new SendMessageUsecase(new MessageApi()).execute(m);
+  }
+
+  public destroyed() {
+    socket.setOnMessageCustom((event) => { });
   }
 
   private async loadMessages() {
-    this.messages = await this.getmessages.handle(this.uid, this.operator.token);
-    sendChat.onNewMessage = (m: Message) => {
-      this.messages.push(m);
-    };
+    this.messages = await new MessageHistoriesUsecase(new MessageApi()).execute(this.uid);
   }
 
   private initSocket() {
-    socket.connect(this.operator.token, () => {
-      socket.setOnMessage((event) => {
-        const data = JSON.parse(event.data);
-        if (data.method === 'post') {
-
-          const message = Message.from(data);
-          if (this.uid === message.uid) {
-            this.messages.push(message);
-          }
-
-          this.addMessage({ message });
-
-          const user = new User(data.userId, data.uid, message);
-          user.badge = 1;
-          this.addUser({ user, ignoreBadgeCount: false });
+    socket.setOnMessageCustom((event) => {
+      const data = JSON.parse(event.data);
+      if (data.method === 'post') {
+        const message = MessageConverter.convertMessage(data);
+        if (this.uid === message.uid) {
+          this.messages.push(message);
         }
-      });
+      }
     });
   }
 }
+
 </script>

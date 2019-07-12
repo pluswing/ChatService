@@ -1,12 +1,12 @@
 <template>
-  <v-toolbar dark color="primary">
-    <v-toolbar-side-icon></v-toolbar-side-icon>
+  <v-toolbar dark color="primary" style="z-index:1;">
+    <v-toolbar-side-icon @click="sideClick"></v-toolbar-side-icon>
 
     <v-toolbar-title class="white--text">ChatService</v-toolbar-title>
 
     <v-spacer></v-spacer>
     {{ operator.loginId }}
-    <v-menu offset-y>
+    <v-menu v-if="operator" offset-y>
       <template v-slot:activator="{ on }">
         <v-btn icon v-on="on">
           <v-icon>fas fa-user</v-icon>
@@ -22,16 +22,23 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
-import { State, Mutation } from 'vuex-class';
-import { OperatorState } from '@/store/operator';
+import { StoreOperator } from '@/store/operator';
+import { Component, Emit, Vue } from 'vue-property-decorator';
+import { Mutation, State } from 'vuex-class';
 @Component({
   components: {
   },
 })
 export default class Header extends Vue {
-  @State('operator') public operator!: OperatorState;
+  @State('operator') public operator!: StoreOperator;
   @Mutation('operator/logout') public logout!: () => void;
+
+  @Emit() public side() { }
+
+
+  public sideClick() {
+    this.side();
+  }
 
   public doLogout() {
     this.logout();
