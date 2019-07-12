@@ -42,7 +42,8 @@ app.post('/authenticate', async (req, res) => {
   const password = req.body.password;
   try {
     const operator = await opRepo.login(loginId, password);
-    const token = jwt.sign({ sub: operator.loginId }, secret, signOptions);
+    const payload = { sub: operator.loginId };
+    const token = jwt.sign(payload, secret, signOptions);
     res.json({
       operator,
       success: true,
