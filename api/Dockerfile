@@ -6,4 +6,6 @@ ADD . /api
 WORKDIR /api
 RUN npm install
 
+ENV PORT $API_PORT
+
 CMD npm start

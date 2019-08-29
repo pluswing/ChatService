@@ -28,8 +28,8 @@ app.options('*', (req, res) => {
 ChatWs.bind('/v1/chat/ws/', app);
 app.use('/v1/operator', Operator);
 
-app.listen(3010, () => {
-  console.log('Example app listening on port 3010!');
+app.listen(process.env.PORT, () => {
+  console.log(`Example app listening on port ${process.env.PORT}!`);
 });
 
 export default app;
