@@ -2,7 +2,7 @@ import * as WebSocket from 'ws';
 import { Operator } from '../repositories/Operator';
 import { User } from '../repositories/User';
 
-class Sockets {
+export class Sockets {
   private sockets: { [key: number]: WebSocket } = {};
   private operatorSockets: { [key: number]: WebSocket } = {};
 

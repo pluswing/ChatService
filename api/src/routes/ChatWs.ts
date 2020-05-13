@@ -6,6 +6,7 @@ import * as jwt from 'jsonwebtoken';
 import { OperatorDAO } from '../repositories/Operator';
 import { UserDAO } from '../repositories/User';
 import { UserMessage, UserMessageDAO } from '../repositories/UserMessage';
+import { sendRedis } from '../redis';
 
 const bind = (path: string, originalApp: Express.Application) => {
   const { app, getWss, applyTo } = ExpressWs(originalApp);
@@ -70,6 +71,7 @@ const bind = (path: string, originalApp: Express.Application) => {
           createdAt: um.createdAt,
           uid: u.uid,
         });
+        sendRedis(u, resp)
         sockets.sendUser(u, resp);
         sockets.broadcastOperators(resp);
       }

@@ -1,13 +1,26 @@
 import * as redis from "redis";
+import { Sockets } from "../websocket/sockets"
+import { User } from "../repositories/User";
 const client = redis.createClient({
   host: "redis"
 });
 
-client.subscribe("userMessage");
-client.on("message", (channel, message) => {
-  if (channel == "userMessage") {
-    // message
-  }
-})
+export const setupRedis = (sockets: Sockets) => {
+  client.subscribe("sendUser");
+  client.subscribe("broadcastOperators");
 
-// client.publish("userMessage", message)
+  client.on("message", (channel, message) => {
+    if (channel == "sendUser") {
+      // message
+      // sockets.sendUser(message)
+    } else if (channel == "broadcastOperators") {
+    }
+  })
+}
+
+export const sendUser = (user: User, message: string) => {
+  client.publish("sendUser", message)
+}
+export const broadcastOperators = (message: string) => {
+  client.publish("broadcastOperators", message)
+}
