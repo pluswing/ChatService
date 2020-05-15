@@ -11,16 +11,23 @@ export const setupRedis = (sockets: Sockets) => {
 
   client.on("message", (channel, message) => {
     if (channel == "sendUser") {
-      // message
-      // sockets.sendUser(message)
+      const m = JSON.parse(message)
+      const u = new User("")
+      u.id = m.user_id
+      sockets.sendUser(u, m.message)
     } else if (channel == "broadcastOperators") {
+      sockets.broadcastOperators(message)
     }
   })
 }
 
 export const sendUser = (user: User, message: string) => {
-  client.publish("sendUser", message)
+  client.publish("sendUser", JSON.stringify({
+    user_id: user.id,
+    message
+  }))
 }
+
 export const broadcastOperators = (message: string) => {
   client.publish("broadcastOperators", message)
 }
