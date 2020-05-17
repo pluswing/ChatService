@@ -4,6 +4,9 @@ import { User } from "../repositories/User";
 const client = redis.createClient({
   host: "redis"
 });
+const client2 = redis.createClient({
+  host: "redis"
+});
 
 export const setupRedis = (sockets: Sockets) => {
   client.subscribe("sendUser");
@@ -22,12 +25,12 @@ export const setupRedis = (sockets: Sockets) => {
 }
 
 export const sendUser = (user: User, message: string) => {
-  client.publish("sendUser", JSON.stringify({
+  client2.publish("sendUser", JSON.stringify({
     user_id: user.id,
     message
   }))
 }
 
 export const broadcastOperators = (message: string) => {
-  client.publish("broadcastOperators", message)
+  client2.publish("broadcastOperators", message)
 }

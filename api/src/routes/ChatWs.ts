@@ -101,7 +101,7 @@ const bind = (path: string, originalApp: Express.Application) => {
         sendUser(u, JSON.stringify({
           method: 'histories',
           histories,
-        })
+        }))
       }
     });
   });
