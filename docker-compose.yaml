@@ -31,15 +31,9 @@ services:
   client:
     build:
       context: ./client
-      args:
-        API_ENDPOINT: $API_ENDPOINT
-        API_ENDPOINT_WS: $API_ENDPOINT_WS
     tty: true
     ports:
       - "3011:3011"
-    environment:
-      - API_ENDPOINT
-      - API_ENDPOINT_WS
   operator:
     build: ./operator
     tty: true

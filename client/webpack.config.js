@@ -1,6 +1,5 @@
 const path = require('path');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
-const Dotenv = require('dotenv-webpack');
 
 module.exports = {
   mode: process.env.NODE_ENV,
@@ -56,10 +55,6 @@ module.exports = {
   },
   plugins: [
     new VueLoaderPlugin(),
-    new Dotenv({
-      systemvars: true,
-      silent: true,
-    })
   ],
   output: {
     library: 'PluswingChatService',

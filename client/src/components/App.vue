@@ -1,7 +1,7 @@
 <template>
   <div class="pluswing_chat_service_container">
     <Minimize v-if="minimized" title="チャット" @clicked="show" />
-    <Chat v-if="!minimized" :uid="uid" @close="hide" />
+    <Chat v-if="!minimized" :uid="uid" :url="url" @close="hide" />
   </div>
 </template>
 
@@ -18,6 +18,7 @@ import Minimize from './Minimize.vue';
 })
 export default class App extends Vue {
   @Prop() private uid!: string;
+  @Prop() private url!: string;
 
   private minimized = true;
 

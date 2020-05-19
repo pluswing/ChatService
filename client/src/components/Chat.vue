@@ -14,9 +14,6 @@ import ChatHistory from './ChatHistory.vue';
 import ChatInputForm from './ChatInputForm.vue';
 import Header from './Header.vue';
 
-const API_ENDPOINT = process.env.API_ENDPOINT;
-const API_ENDPOINT_WS = process.env.API_ENDPOINT_WS;
-
 @Component({
   components: {
     ChatHistory,
@@ -28,8 +25,13 @@ export default class Chat extends Vue {
 
   public messages: Message[] = [];
   @Prop() private uid!: string;
+  @Prop() private url!: string;
 
-  private connection = new WebSocket(`${API_ENDPOINT_WS}/v1/chat/ws/`);
+  private wsUrl() {
+    return this.url.replace("http", "ws")
+  }
+
+  private connection = new WebSocket(`${this.wsUrl()}/v1/chat/ws/`);
   @Emit() public close() { }
 
   public async created() {

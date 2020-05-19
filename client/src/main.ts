@@ -5,7 +5,11 @@ import Vue from 'vue';
 
 import App from './components/App.vue';
 
-const init = (target: string) => {
+interface Options {
+  url: string;
+}
+
+const init = (target: string, options: Options) => {
 
   let uid = Cookies.get('pwcs_uid');
   if (!uid) {
@@ -20,7 +24,7 @@ const init = (target: string) => {
       App,
     },
     el: target,
-      template: `<App uid="${uid}" />`,
+      template: `<App uid="${uid}" url="${options.url}" />`,
   });
 };
 
