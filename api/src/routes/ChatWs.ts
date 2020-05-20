@@ -61,6 +61,8 @@ const bind = (path: string, originalApp: Express.Application) => {
       }
 
       if (m.method === 'post') {
+        console.log("***** POST! *****");
+        console.log(m);
         const u = await userDao.findOrCreate(m.uid);
         sockets.addUserSocket(u, ws);
         const um = new UserMessage(u.id, m.message);

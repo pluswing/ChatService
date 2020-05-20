@@ -51,3 +51,27 @@ services:
       - "3306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: $DB_PASSWORD
+  api2:
+    build:
+      context: ./api
+      args:
+        API_PORT: 3013
+    tty: true
+    links:
+      - mysql
+    ports:
+      - "3013:3013"
+    environment:
+      - PORT=3013
+      - API_PORT
+      - DB_HOST
+      - DB_USER
+      - DB_PASSWORD
+      - DB_NAME
+      - SECRET
+      - ISSUER
+      - AUDIENCE
+      - DIGEST_SECRET
+      - OPERATOR_NAME
+      - OPERATOR_LOGIN_ID
+      - OPERATOR_PASSWORD

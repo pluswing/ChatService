@@ -6,7 +6,7 @@ import { ExtractJwt, Strategy as JwtStrategy } from 'passport-jwt';
 import { OperatorDAO } from '../repositories/Operator';
 import { UserDAO } from '../repositories/User';
 import { UserMessage, UserMessageDAO } from '../repositories/UserMessage';
-import sockets from '../websocket/sockets';
+import { sendUser, broadcastOperators } from '../redis';
 
 const opRepo = new OperatorDAO();
 
@@ -107,8 +107,10 @@ app.post('/send', async (req, res) => {
     createdAt: um.createdAt,
     uid: user.uid,
   });
-  sockets.sendUser(user, resp);
-  sockets.broadcastOperators(resp);
+  // sockets.sendUser(user, resp);
+  sendUser(user, resp);
+  // sockets.broadcastOperators(resp);
+  broadcastOperators(resp);
   return res.json({ message: um });
 });
 
