@@ -1,8 +1,10 @@
 import * as BodyParser from 'body-parser';
 import * as Express from 'express';
 
+import { setupRedis } from './redis';
 import ChatWs from './routes/ChatWs';
 import Operator from './routes/Operator';
+import sockets from './websocket/sockets';
 
 const app = Express();
 app.use(BodyParser.json());
@@ -24,6 +26,8 @@ app.use((req, res, next) => {
 app.options('*', (req, res) => {
   res.sendStatus(200);
 });
+
+setupRedis(sockets);
 
 ChatWs.bind('/v1/chat/ws/', app);
 app.use('/v1/operator', Operator);

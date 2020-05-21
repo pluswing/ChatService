@@ -3,10 +3,10 @@ import * as ExpressWs from 'express-ws';
 import sockets from '../websocket/sockets';
 
 import * as jwt from 'jsonwebtoken';
+import { broadcastOperators, sendUser } from '../redis';
 import { OperatorDAO } from '../repositories/Operator';
 import { UserDAO } from '../repositories/User';
 import { UserMessage, UserMessageDAO } from '../repositories/UserMessage';
-import { setupRedis, sendUser, broadcastOperators } from '../redis';
 
 const bind = (path: string, originalApp: Express.Application) => {
   const { app, getWss, applyTo } = ExpressWs(originalApp);
@@ -23,8 +23,6 @@ const bind = (path: string, originalApp: Express.Application) => {
 
   // {method: 'register', uid: 'xxxxxxxxx'}
   // {method: 'post', to: 'xxxxxxx', body: '......'}
-
-  setupRedis(sockets)
 
   const userDao = new UserDAO();
   const userMessageDao = new UserMessageDAO();
@@ -61,8 +59,6 @@ const bind = (path: string, originalApp: Express.Application) => {
       }
 
       if (m.method === 'post') {
-        console.log("***** POST! *****");
-        console.log(m);
         const u = await userDao.findOrCreate(m.uid);
         sockets.addUserSocket(u, ws);
         const um = new UserMessage(u.id, m.message);
@@ -75,10 +71,10 @@ const bind = (path: string, originalApp: Express.Application) => {
           createdAt: um.createdAt,
           uid: u.uid,
         });
-        //sockets.sendUser(u, resp);
-        sendUser(u, resp)
-        //sockets.broadcastOperators(resp);
-        broadcastOperators(resp)
+        // sockets.sendUser(u, resp);
+        sendUser(u, resp);
+        // sockets.broadcastOperators(resp);
+        broadcastOperators(resp);
       }
 
       if (m.method === 'histories') {
@@ -96,14 +92,14 @@ const bind = (path: string, originalApp: Express.Application) => {
 
         sockets.addUserSocket(u, ws);
         const histories = await userMessageDao.histories(u);
-        //sockets.sendUser(u, JSON.stringify({
-        //  method: 'histories',
-        //  histories,
-        //}));
+        // sockets.sendUser(u, JSON.stringify({
+        //   method: 'histories',
+        //   histories,
+        // }));
         sendUser(u, JSON.stringify({
           method: 'histories',
           histories,
-        }))
+        }));
       }
     });
   });
