@@ -35,7 +35,10 @@ services:
     ports:
       - "3011:3011"
   operator:
-    build: ./operator
+    build:
+      context: ./operator
+      args:
+        PORT: 3002
     tty: true
     ports:
       - "3012:3012"

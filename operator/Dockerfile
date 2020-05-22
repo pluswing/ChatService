@@ -5,4 +5,4 @@ WORKDIR /operator
 RUN npm install
 RUN npm run build
 
-CMD npx http-server -p 3002 dist
+CMD npx http-server -p $PORT dist

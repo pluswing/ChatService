@@ -20,7 +20,7 @@ import { MessageApi } from '../repositories/MessageApi';
 import { UserApi } from '../repositories/UserApi';
 import socket from '../socket/socket';
 import { StoreOperator } from '../store/operator';
-import { StoreUser, UsersState } from '../store/users';
+import { StoreUser, UsersState, StoreMessage } from '../store/users';
 import { ActivitiesUsecase } from '../usecases/ActivitiesUsecase';
 import { GetUsersUsecase } from '../usecases/GetUsersUsecase';
 
@@ -31,26 +31,15 @@ import { GetUsersUsecase } from '../usecases/GetUsersUsecase';
 })
 export default class Activities extends Vue {
   @State('operator') public operator!: StoreOperator;
-
-  @Mutation('users/add') public addUser!: (payload: { user: StoreUser, ignoreBadgeCount: boolean }) => void;
-  public messages: Message[] = [];
+  @Mutation('users/clearMessage') public clear!: (payload: {}) => void;
+  @Mutation('users/addMessage') public addMessage!: (payload: { message: StoreMessage }) => void;
+  @Getter('users/messages') public messages!: Message[];
 
   public async created() {
-    this.initSocket();
-    this.messages = await new ActivitiesUsecase(new MessageApi()).execute();
-  }
-
-  private initSocket() {
-    socket.connect(this.operator.token, () => {
-      socket.setOnMessage((event) => {
-        const data = JSON.parse(event.data);
-        if (data.method === 'post') {
-          const message = MessageConverter.convertMessage(data);
-          const user = UserConverter.convertUser(data, message);
-          user.badge = 1;
-          this.addUser({ user, ignoreBadgeCount: false });
-        }
-      });
+    const ms = await new ActivitiesUsecase(new MessageApi()).execute();
+    this.clear({});
+    ms.forEach((m) => {
+      this.addMessage({message: m});
     });
   }
 }

@@ -19,7 +19,7 @@ import { User } from './models/User';
 import { initApi } from './repositories/api';
 import socket from './socket/socket';
 import { StoreOperator } from './store/operator';
-import { StoreUser } from './store/users';
+import { StoreUser, StoreMessage } from './store/users';
 
 @Component({
   components: {
@@ -31,6 +31,7 @@ export default class App extends Vue {
   @State('operator') public operator!: StoreOperator;
   @Mutation('users/add') public addUser!: (payload: { user: StoreUser, ignoreBadgeCount: boolean }) => void;
   @Getter('users/users') public users!: User[];
+  @Mutation('users/addMessage') public addMessage!: (payload: { message: StoreMessage }) => void;
 
   private showSide = false;
 
@@ -63,6 +64,7 @@ export default class App extends Vue {
           const user = UserConverter.convertUser(data, message);
           user.badge = 1;
           this.addUser({ user, ignoreBadgeCount: false });
+          this.addMessage({ message });
         }
       });
     });

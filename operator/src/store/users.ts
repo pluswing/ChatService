@@ -2,6 +2,7 @@ import { MessageConverter } from '@/converter/MessageConverter';
 import { UserConverter } from '@/converter/UserConverter';
 import { User } from '@/models/User';
 import { DefineGetters, DefineMutations } from 'vuex-type-helper';
+import { Message } from '@/models/Message';
 
 export interface StoreMessage {
   id: number;
@@ -20,10 +21,12 @@ export interface StoreUser {
 
 export interface UsersState {
   users: StoreUser[];
+  messages: StoreMessage[];
 }
 
 export interface UsersGetters {
   users: User[];
+  messages: Message[];
 }
 
 export interface UsersMutations {
@@ -35,6 +38,10 @@ export interface UsersMutations {
   clearBadge: {
     uid: string;
   };
+  clearMessage: {};
+  addMessage: {
+    message: StoreMessage;
+  };
 }
 
 /*
@@ -44,6 +51,7 @@ export interface OperatorActions {
 
 const state: UsersState = {
   users: [],
+  messages: [],
 };
 
 const getters: DefineGetters<UsersGetters, UsersState> = {
@@ -51,6 +59,11 @@ const getters: DefineGetters<UsersGetters, UsersState> = {
     return s.users.map((u) => {
       const m = MessageConverter.convertMessage(u.message);
       return UserConverter.convertUser(u, m);
+    });
+  },
+  messages(s): Message[] {
+    return s.messages.map((m) => {
+      return MessageConverter.convertMessage(m);
     });
   },
 };
@@ -77,6 +90,13 @@ const mutations: DefineMutations<UsersMutations, UsersState> = {
     if (user) {
       user.badge = 0;
     }
+  },
+  clearMessage(s) {
+    s.messages = [];
+  },
+  addMessage(s, { message }) {
+    s.messages.unshift(message);
+    s.messages = s.messages.slice(0, 100);
   },
 };
 
