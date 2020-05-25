@@ -20,7 +20,7 @@ import { MessageApi } from '../repositories/MessageApi';
 import { UserApi } from '../repositories/UserApi';
 import socket from '../socket/socket';
 import { StoreOperator } from '../store/operator';
-import { StoreUser, UsersState, StoreMessage } from '../store/users';
+import { StoreMessage, StoreUser, UsersState } from '../store/users';
 import { ActivitiesUsecase } from '../usecases/ActivitiesUsecase';
 import { GetUsersUsecase } from '../usecases/GetUsersUsecase';
 

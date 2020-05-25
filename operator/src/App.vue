@@ -19,7 +19,7 @@ import { User } from './models/User';
 import { initApi } from './repositories/api';
 import socket from './socket/socket';
 import { StoreOperator } from './store/operator';
-import { StoreUser, StoreMessage } from './store/users';
+import { StoreMessage, StoreUser } from './store/users';
 
 @Component({
   components: {
